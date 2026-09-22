@@ -1,0 +1,3644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Template | People & Enterprise Tech</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        @font-face {
+            font-family: 'MB Corpo A Title Cond';
+            src: url('C:/Windows/Fonts/MBCorpoATitleCondOffice-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'MB Corpo S Text';
+            src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'MB Corpo S Text';
+            src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'MB Corpo S Text';
+            src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Light.ttf') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        :root {
+            --red: #FF0000;
+            --orange-dark: #FF7500;
+            --orange: #FF9102;
+            --amber: #FFA101;
+            --gold: #FFC767;
+            --black: #0a0a0a;
+            --charcoal: #262626;
+            --gray: #7D7D7D;
+            --light-gray: #D9D9D9;
+            --blue: #0078D6;
+            --cyan: #00B0F0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .presentation {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 60px 80px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+
+        /* ===== Star Pattern Background ===== */
+        .star-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.12;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cpath d='M35 20 L36.3 33.2 L46.5 40.5 L35 36.5 L23.5 40.5 L33.7 33.2 Z' fill='%23ffffff'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            pointer-events: none;
+        }
+
+        /* ===== Slide Themes ===== */
+        .slide-dark {
+            background: #0a0a0a;
+        }
+
+        .slide-dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at top right, rgba(255, 140, 0, 0.25) 0%, transparent 45%),
+                radial-gradient(ellipse at bottom left, rgba(255, 117, 0, 0.2) 0%, transparent 45%),
+                radial-gradient(ellipse at bottom right, rgba(255, 160, 0, 0.08) 0%, transparent 35%),
+                radial-gradient(ellipse at top left, rgba(255, 117, 0, 0.06) 0%, transparent 30%);
+            pointer-events: none;
+        }
+
+        .slide-light {
+            background: #ffffff;
+            color: var(--charcoal);
+        }
+
+        .slide-light::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at top left, rgba(255, 199, 103, 0.35) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom right, rgba(255, 199, 103, 0.3) 0%, transparent 40%),
+                radial-gradient(ellipse at top right, rgba(255, 160, 0, 0.08) 0%, transparent 30%),
+                radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.06) 0%, transparent 30%);
+            pointer-events: none;
+        }
+
+        .slide-light .star-bg {
+            opacity: 0.06;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cpath d='M35 20 L36.3 33.2 L46.5 40.5 L35 36.5 L23.5 40.5 L33.7 33.2 Z' fill='%23c8a050'/%3E%3C/svg%3E");
+        }
+
+        /* ===== Logo ===== */
+        .mb-logo {
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+        }
+
+        .slide-light .mb-logo {
+            color: var(--charcoal);
+        }
+
+        .mb-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ===== Typography ===== */
+        h1 {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: normal;
+            letter-spacing: 0.01em;
+            line-height: 1.15;
+            margin-bottom: 0.5em;
+        }
+
+        h2 {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 2.8rem;
+            font-weight: normal;
+            letter-spacing: 0.01em;
+            line-height: 1.15;
+            margin-bottom: 0.6em;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5em;
+        }
+
+        h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4em;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.8;
+            letter-spacing: 0.05em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--orange-dark), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-ampersand {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            background: linear-gradient(180deg, var(--red), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.2em;
+        }
+
+        /* ===== Slide Footer ===== */
+        .slide-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 80px;
+            right: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ===== Navigation ===== */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 145, 2, 0.2);
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--orange);
+            background: rgba(255, 145, 2, 0.1);
+            color: var(--orange);
+        }
+
+        .slide-counter {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
+            transition: width 0.4s ease;
+            z-index: 1001;
+        }
+
+        /* ===== Chapter Cards (Agenda) ===== */
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chapter-card {
+            background: linear-gradient(135deg, var(--orange-dark), var(--orange), var(--amber));
+            border-radius: 12px;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            min-height: 180px;
+        }
+
+        .chapter-card .num {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 2.8rem;
+            font-weight: normal;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .chapter-card .label {
+            font-size: 1.05rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--white);
+        }
+
+        /* ===== Agenda List (simple) ===== */
+        .agenda-list {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .agenda-item {
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .slide-light .agenda-item {
+            border-bottom-color: rgba(0,0,0,0.08);
+        }
+
+        .agenda-item .agenda-title {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 2rem;
+            flex: 1;
+        }
+
+        .agenda-item .agenda-time {
+            font-size: 1rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        /* ===== Two Column Layout ===== */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .col-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 145, 2, 0.25);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .slide-light .col-box {
+            background: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .col-box h3 {
+            color: var(--orange);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        .col-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .col-box ul li {
+            padding: 8px 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .col-box ul li::before {
+            content: '\2022';
+            position: absolute;
+            left: 0;
+            color: var(--orange);
+            font-weight: bold;
+        }
+
+        /* ===== Content Cards Grid ===== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-grid.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .content-grid.cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 199, 103, 0.3);
+            border-radius: 12px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .slide-light .content-card {
+            background: rgba(0,0,0,0.02);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .content-card .card-num {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 2.4rem;
+            color: var(--orange);
+            margin-bottom: 8px;
+        }
+
+        .content-card .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .content-card .card-desc {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            line-height: 1.5;
+        }
+
+        /* ===== Table ===== */
+        .data-table {
+            width: 100%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            position: relative;
+            z-index: 1;
+            font-size: 0.9rem;
+        }
+
+        .data-table thead th {
+            background: linear-gradient(90deg, var(--orange-dark), var(--amber));
+            color: var(--white);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table thead th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .data-table thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            vertical-align: middle;
+        }
+
+        .slide-light .data-table tbody td {
+            border-bottom-color: rgba(0,0,0,0.08);
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .slide-light .data-table tbody tr:nth-child(odd) {
+            background: rgba(0,0,0,0.02);
+        }
+
+        /* ===== Process Steps ===== */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .process-step {
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step .step-shape {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 2rem;
+            border: 2px solid var(--charcoal);
+            clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 10% 50%);
+            background: transparent;
+            margin-bottom: 16px;
+        }
+
+        .process-step:first-child .step-shape {
+            clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+        }
+
+        .process-step.active-step .step-shape {
+            border-color: var(--orange);
+        }
+
+        .process-step .step-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .process-step .step-desc {
+            font-size: 0.8rem;
+            opacity: 0.75;
+            line-height: 1.5;
+        }
+
+        /* ===== Timeline ===== */
+        .timeline {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gray);
+        }
+
+        .timeline-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 54px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--orange);
+        }
+
+        .timeline-item .tl-date {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .timeline-item .tl-desc {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            opacity: 0.85;
+        }
+
+        /* ===== Quote / Statement ===== */
+        .statement-box {
+            background: rgba(125, 125, 125, 0.2);
+            border-radius: 4px;
+            padding: 40px 60px;
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border: 1px solid var(--orange);
+        }
+
+        .statement-box p {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        .statement-box .bold-text {
+            font-weight: bold;
+        }
+
+        /* ===== Team Grid ===== */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .team-member .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--charcoal);
+            margin: 0 auto 14px;
+            border: 3px solid var(--orange);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .team-member .avatar:hover {
+            border-color: var(--orange-dark);
+            box-shadow: 0 0 0 3px rgba(255, 145, 2, 0.2);
+        }
+
+        .team-member .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .team-member .avatar .avatar-hint {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--gray);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .team-member .avatar:hover .avatar-hint {
+            opacity: 1;
+        }
+
+        .team-member .avatar .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border-radius: 50%;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .team-member .avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .team-member .member-name {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .team-member .member-role {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* ===== Diagram / Chart placeholder ===== */
+        .chart-area {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: rgba(255, 145, 2, 0.05);
+            border: 2px dashed rgba(255, 145, 2, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== Image placeholder ===== */
+        .image-placeholder {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 16/9;
+            background: var(--charcoal);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255,145,2,0.2);
+            cursor: pointer;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .image-placeholder:hover {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 2px rgba(255, 145, 2, 0.2);
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 7px;
+        }
+
+        .image-placeholder .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 7px;
+        }
+
+        .image-placeholder:hover .img-overlay {
+            opacity: 1;
+        }
+
+        .image-placeholder .upload-hint {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .image-placeholder .upload-hint .hint-icon {
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
+        .slide-light .image-placeholder {
+            background: var(--light-gray);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .slide-light .image-placeholder:hover {
+            border-color: var(--orange);
+        }
+
+        /* ===== Two Images with Text Cards ===== */
+        .two-image-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .img-text-card {
+            border: 2px solid var(--orange);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-text-card-header {
+            background: linear-gradient(90deg, var(--orange-dark), var(--gold));
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .img-text-card-image {
+            width: 100%;
+            height: 200px;
+            background: rgba(125, 125, 125, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            margin: 16px auto 0;
+            width: calc(100% - 32px);
+            border-radius: 6px;
+            transition: box-shadow 0.2s;
+        }
+
+        .img-text-card-image:hover {
+            box-shadow: 0 0 0 2px var(--orange);
+        }
+
+        .img-text-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .img-text-card-image .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+
+        .img-text-card-image:hover .img-overlay {
+            opacity: 1;
+        }
+
+        .img-text-card-image .upload-hint {
+            font-size: 0.9rem;
+            color: var(--white);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .img-text-card-body {
+            padding: 16px 20px;
+        }
+
+        .img-text-card-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .img-text-card-body ul li {
+            padding: 6px 0;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .img-text-card-body ul li::before {
+            content: '!';
+            position: absolute;
+            left: 0;
+            color: var(--orange);
+            font-weight: bold;
+        }
+
+        .two-image-callout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .two-image-callout .callout-arrow {
+            color: var(--orange);
+            font-size: 1.4rem;
+        }
+
+        .two-image-callout .callout-text {
+            font-family: 'MB Corpo A Title Cond', Georgia, serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        /* ===== Interactive Table ===== */
+        .interactive-table-wrap {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, var(--orange) 0%, transparent 20%, transparent 80%, var(--red)) 1;
+            padding: 4px;
+        }
+
+        .interactive-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .interactive-table thead th {
+            background: #FFA500;
+            color: var(--white);
+            padding: 14px 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-right: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .interactive-table thead th:last-child {
+            border-right: none;
+        }
+
+        .interactive-table tbody td {
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: none;
+            min-width: 80px;
+            min-height: 36px;
+        }
+
+        .interactive-table tbody tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .interactive-table tbody tr:nth-child(odd) {
+            background: transparent;
+        }
+
+        .interactive-table th[contenteditable="true"],
+        .interactive-table td[contenteditable="true"] {
+            outline: 1px dashed rgba(0, 176, 240, 0.4);
+            outline-offset: -1px;
+            cursor: text;
+        }
+
+        .interactive-table th[contenteditable="true"]:focus,
+        .interactive-table td[contenteditable="true"]:focus {
+            outline: 2px solid rgba(0, 176, 240, 0.8);
+            background: rgba(0, 176, 240, 0.05);
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            justify-content: flex-end;
+        }
+
+        .table-controls button {
+            padding: 5px 12px;
+            background: #fff;
+            color: var(--charcoal);
+            border: 1px solid rgba(0,0,0,0.15);
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .table-controls button:hover {
+            background: var(--orange);
+            color: white;
+            border-color: var(--orange);
+        }
+
+        /* ===== Topic Overview Layout ===== */
+        .topic-overview-layout {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+            align-items: center;
+        }
+
+        .topic-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .topic-item {
+            padding: 0;
+        }
+
+        .topic-item .topic-title {
+            color: var(--orange);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .topic-item ul {
+            list-style: disc;
+            padding-left: 18px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: var(--charcoal);
+        }
+
+        .topic-item ul li {
+            margin-bottom: 2px;
+        }
+
+        .topic-center {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topic-center-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--charcoal);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            z-index: 2;
+        }
+
+        .topic-center-circle:hover {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(255, 145, 2, 0.2);
+        }
+
+        .topic-center-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .topic-center-circle .avatar-hint {
+            font-size: 0.85rem;
+            color: var(--white);
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .topic-center-circle .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 50%;
+        }
+
+        .topic-center-circle:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .topic-spokes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .topic-spokes::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -30px;
+            right: -30px;
+            height: 1px;
+            background: var(--charcoal);
+            opacity: 0.3;
+        }
+
+        .topic-spokes::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            bottom: 15%;
+            left: -20px;
+            right: -20px;
+            border: 1px solid rgba(0,0,0,0.15);
+            border-radius: 50%;
+            background: none;
+        }
+
+        /* ===== 3 Images Grid Layout ===== */
+        .three-images-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .three-img-col {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .three-img-area {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--charcoal);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.2s;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .three-img-area:hover {
+            box-shadow: 0 0 0 3px rgba(255, 145, 2, 0.3);
+        }
+
+        .three-img-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .three-img-area .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .three-img-area:hover .img-overlay {
+            opacity: 1;
+        }
+
+        .three-img-area .upload-hint {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: var(--charcoal);
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        .three-img-area .upload-hint .hint-icon {
+            font-size: 1.2rem;
+        }
+
+        .three-img-desc {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--charcoal);
+            opacity: 0.85;
+        }
+
+        /* ===== Title with Image Layout ===== */
+        .title-image-area {
+            width: 100%;
+            height: 320px;
+            background: var(--charcoal);
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+
+        .title-image-area:hover {
+            box-shadow: 0 0 0 3px rgba(255, 145, 2, 0.3);
+        }
+
+        .title-image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .title-image-area .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .title-image-area:hover .img-overlay {
+            opacity: 1;
+        }
+
+        .title-image-area .upload-hint {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 24px;
+            border-radius: 6px;
+            color: var(--charcoal);
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        .title-image-area .upload-hint .hint-icon {
+            font-size: 1.3rem;
+        }
+
+        .title-image-text {
+            width: 100%;
+            padding: 28px 0 0;
+            text-align: center;
+        }
+
+        /* ===== Animate In ===== */
+        .animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .slide.active .animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide.active .animate-in:nth-child(2) { transition-delay: 0.1s; }
+        .slide.active .animate-in:nth-child(3) { transition-delay: 0.2s; }
+        .slide.active .animate-in:nth-child(4) { transition-delay: 0.3s; }
+        .slide.active .animate-in:nth-child(5) { transition-delay: 0.4s; }
+
+        /* ===== EDIT MODE ===== */
+        .edit-toggle-btn {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 1500;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 145, 2, 0.9);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .edit-toggle-btn:hover {
+            background: var(--orange-dark);
+            transform: scale(1.1);
+        }
+
+        .save-btn, .cancel-btn {
+            position: fixed;
+            top: 14px;
+            z-index: 1500;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .save-btn {
+            right: 62px;
+            background: rgba(0, 160, 80, 0.9);
+        }
+
+        .save-btn:hover {
+            background: #00a050;
+            transform: scale(1.1);
+        }
+
+        .cancel-btn {
+            right: 110px;
+            background: rgba(180, 40, 40, 0.9);
+        }
+
+        .cancel-btn:hover {
+            background: #c0302f;
+            transform: scale(1.1);
+        }
+
+        body.edit-mode .save-btn,
+        body.edit-mode .cancel-btn {
+            display: flex;
+        }
+
+        .edit-mode-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: rgba(0, 120, 214, 0.95);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-family: 'Inter', sans-serif;
+            z-index: 2000;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            letter-spacing: 0.02em;
+        }
+
+        body.edit-mode .edit-mode-bar {
+            transform: translateY(0);
+        }
+
+        body.edit-mode .edit-toggle-btn {
+            background: rgba(0, 120, 214, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 120, 214, 0.4);
+        }
+
+        body.edit-mode .edit-toggle-btn:hover {
+            background: #005a9e;
+        }
+
+        body.edit-mode [contenteditable="true"] {
+            outline: 1px dashed rgba(0, 176, 240, 0.4);
+            outline-offset: 2px;
+            border-radius: 3px;
+            transition: outline-color 0.2s;
+            cursor: text;
+        }
+
+        body.edit-mode [contenteditable="true"]:hover {
+            outline-color: rgba(0, 176, 240, 0.7);
+        }
+
+        body.edit-mode [contenteditable="true"]:focus {
+            outline: 2px solid rgba(0, 176, 240, 0.9);
+            outline-offset: 3px;
+            background: rgba(0, 176, 240, 0.03);
+        }
+
+        .save-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 160, 80, 0.95);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-family: 'Inter', sans-serif;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 3000;
+            pointer-events: none;
+        }
+
+        .save-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== Slide Management Toolbar ===== */
+        .slide-mgmt-bar {
+            position: fixed;
+            top: 36px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(30, 30, 30, 0.95);
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            z-index: 1999;
+            transform: translateY(-76px);
+            transition: transform 0.3s ease;
+        }
+
+        body.edit-mode .slide-mgmt-bar {
+            transform: translateY(0);
+        }
+
+        .slide-mgmt-bar button {
+            padding: 5px 14px;
+            background: #3a3a3a;
+            color: #ccc;
+            border: 1px solid #4a4a4a;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .slide-mgmt-bar button:hover {
+            background: #4a4a4a;
+            color: #fff;
+        }
+
+        .slide-mgmt-bar button.danger {
+            background: #5a2020;
+            border-color: #7a3030;
+        }
+
+        .slide-mgmt-bar button.danger:hover {
+            background: #7a3030;
+        }
+
+        .slide-mgmt-bar .mgmt-label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-right: 4px;
+        }
+
+        .slide-mgmt-bar select {
+            padding: 4px 8px;
+            background: #2a2a2a;
+            color: #eee;
+            border: 1px solid #4a4a4a;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-size-display {
+            font-size: 0.72rem;
+            color: #aaa;
+            min-width: 36px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* ===== Icon Library ===== */
+        .icon-lib-toggle {
+            position: fixed;
+            top: 14px;
+            right: 158px;
+            z-index: 1500;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(125, 125, 125, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        body.edit-mode .icon-lib-toggle {
+            display: flex;
+        }
+
+        .icon-lib-toggle:hover {
+            background: rgba(255, 145, 2, 0.4);
+            border-color: var(--orange);
+            transform: scale(1.1);
+        }
+
+        .icon-library {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 340px;
+            max-height: 440px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            border-radius: 12px;
+            z-index: 2500;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .icon-library.open {
+            display: flex;
+        }
+
+        .icon-lib-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #151515;
+            border-bottom: 1px solid #333;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .icon-lib-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.3rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .icon-lib-close:hover {
+            color: #fff;
+        }
+
+        .icon-lib-search {
+            padding: 8px 12px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .icon-lib-search input {
+            width: 100%;
+            padding: 7px 12px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            color: #eee;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+
+        .icon-lib-search input:focus {
+            border-color: var(--orange);
+        }
+
+        .icon-lib-categories {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .icon-cat-btn {
+            padding: 4px 10px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 14px;
+            color: #aaa;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .icon-cat-btn:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        .icon-cat-btn.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #fff;
+        }
+
+        .icon-lib-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 260px;
+        }
+
+        .icon-lib-item {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.12s;
+            border: 1px solid transparent;
+        }
+
+        .icon-lib-item:hover {
+            background: rgba(255, 145, 2, 0.15);
+            border-color: var(--orange);
+            transform: scale(1.15);
+        }
+
+        .icon-lib-item.hidden {
+            display: none;
+        }
+
+        .icon-lib-hint {
+            padding: 8px 12px;
+            font-size: 0.65rem;
+            color: #666;
+            text-align: center;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        /* ===== Theme Toggle Button ===== */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 1500;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(125, 125, 125, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 145, 2, 0.3);
+            border-color: var(--orange);
+            transform: scale(1.1);
+        }
+
+        /* ===== Global Theme Override: ALL DARK ===== */
+        body.theme-all-dark .slide.slide-light {
+            background: #0a0a0a !important;
+            color: var(--white) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light::before {
+            background:
+                radial-gradient(ellipse at top right, rgba(255, 140, 0, 0.25) 0%, transparent 45%),
+                radial-gradient(ellipse at bottom left, rgba(255, 117, 0, 0.2) 0%, transparent 45%),
+                radial-gradient(ellipse at bottom right, rgba(255, 160, 0, 0.08) 0%, transparent 35%),
+                radial-gradient(ellipse at top left, rgba(255, 117, 0, 0.06) 0%, transparent 30%) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .star-bg {
+            opacity: 0.12 !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cpath d='M35 20 L36.3 33.2 L46.5 40.5 L35 36.5 L23.5 40.5 L33.7 33.2 Z' fill='%23ffffff'/%3E%3C/svg%3E") !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .mb-logo {
+            color: var(--white) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .slide-footer {
+            color: var(--gray) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .col-box {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 145, 2, 0.25) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .content-card {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 199, 103, 0.3) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .image-placeholder {
+            background: var(--charcoal) !important;
+            border-color: rgba(255,145,2,0.2) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .team-member .avatar {
+            background: var(--charcoal) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .data-table tbody td {
+            border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .data-table tbody tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.02) !important;
+        }
+
+        body.theme-all-dark .slide.slide-light .agenda-item {
+            border-bottom-color: rgba(255,255,255,0.06) !important;
+        }
+
+        body.theme-all-dark .theme-toggle-btn {
+            color: white;
+        }
+
+        /* ===== Global Theme Override: ALL LIGHT ===== */
+        body.theme-all-light .slide.slide-dark {
+            background: #ffffff !important;
+            color: var(--charcoal) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark::before {
+            background:
+                radial-gradient(ellipse at top left, rgba(255, 199, 103, 0.35) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom right, rgba(255, 199, 103, 0.3) 0%, transparent 40%),
+                radial-gradient(ellipse at top right, rgba(255, 160, 0, 0.08) 0%, transparent 30%),
+                radial-gradient(ellipse at bottom left, rgba(255, 140, 0, 0.06) 0%, transparent 30%) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .star-bg {
+            opacity: 0.06 !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cpath d='M35 20 L36.3 33.2 L46.5 40.5 L35 36.5 L23.5 40.5 L33.7 33.2 Z' fill='%23c8a050'/%3E%3C/svg%3E") !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .mb-logo {
+            color: var(--charcoal) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .slide-footer {
+            color: var(--gray) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .col-box {
+            background: rgba(0,0,0,0.02) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .content-card {
+            background: rgba(0,0,0,0.02) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .chapter-card {
+            color: var(--white) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .data-table tbody td {
+            border-bottom-color: rgba(0,0,0,0.08) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .data-table tbody tr:nth-child(odd) {
+            background: rgba(0,0,0,0.02) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .image-placeholder {
+            background: var(--light-gray) !important;
+            border-color: rgba(0,0,0,0.1) !important;
+            color: var(--charcoal) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .statement-box {
+            background: rgba(125, 125, 125, 0.1) !important;
+            color: var(--charcoal) !important;
+        }
+
+        body.theme-all-light .slide.slide-dark .gradient-ampersand {
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        body.theme-all-light .theme-toggle-btn {
+            color: var(--charcoal);
+            border-color: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.05);
+        }
+
+        body.theme-all-light .nav-controls {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        body.theme-all-light .nav-controls .nav-btn {
+            color: var(--charcoal);
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        body.theme-all-light .nav-controls .nav-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+
+        body.theme-all-light .nav-controls .slide-counter {
+            color: var(--gray);
+        }
+
+        body.theme-all-dark .nav-controls {
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        @media print {
+            .edit-toggle-btn { display: none !important; }
+            .nav-controls { display: none !important; }
+            .edit-mode-bar { display: none !important; }
+            .slide-mgmt-bar { display: none !important; }
+            .progress-bar { display: none !important; }
+            .theme-toggle-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="presentation" id="presentation">
+
+        <!-- ========== SLIDE 1: TITLE (Dark) ========== -->
+        <div class="slide slide-dark active">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="text-align: center; position: relative; z-index: 1;">
+                <h1 style="font-size: 2.8rem; margin-bottom: 0.2em;">People <span class="gradient-ampersand">&amp;</span> Enterprise Tech</h1>
+                <div style="height: 2px; width: 120px; background: linear-gradient(90deg, var(--orange-dark), var(--gold)); margin: 30px auto;"></div>
+                <h1>Presentation Title</h1>
+                <p class="subtitle" style="margin-top: 10px;">Subtitle goes here</p>
+            </div>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 2: CHAPTER HEADING (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="text-align: center; position: relative; z-index: 1;">
+                <h1 style="font-size: 3rem; text-transform: uppercase; letter-spacing: 0.15em;">Chapter Heading</h1>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE: TITLE WITH IMAGE (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="title-image-layout" style="position: relative; z-index: 1; width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; gap: 0;">
+                <div class="title-image-area" onclick="handleImageClick(this)">
+                    <div class="upload-hint">
+                        <span class="hint-icon">&#128247;</span>
+                        <span>Insert Picture (Fill)</span>
+                    </div>
+                </div>
+                <div class="title-image-text">
+                    <h1 style="font-size: 3rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.15em;">Title</h1>
+                    <p class="subtitle">Subheadline</p>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 3: AGENDA (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="agenda-list animate-in">
+                <div class="agenda-item">
+                    <span class="agenda-title">Short agenda</span>
+                    <span class="agenda-time">15 min</span>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-title">More Impact</span>
+                    <span class="agenda-time">15 min</span>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-title">Not as much Detail</span>
+                    <span class="agenda-time">15 min</span>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-title">Straight to the point</span>
+                    <span class="agenda-time">15 min</span>
+                </div>
+                <div class="agenda-item">
+                    <span class="agenda-title">About five topics</span>
+                    <span class="agenda-time">15 min</span>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 4: CHAPTER CARDS (Dark) ========== -->
+        <div class="slide slide-dark">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="chapter-grid animate-in">
+                <div class="chapter-card">
+                    <div class="num">01</div>
+                    <div class="label">Lorem ipsum dolor sit amet</div>
+                </div>
+                <div class="chapter-card">
+                    <div class="num">02</div>
+                    <div class="label">Lorem ipsum dolor sit amet</div>
+                </div>
+                <div class="chapter-card">
+                    <div class="num">03</div>
+                    <div class="label">Lorem ipsum dolor sit amet</div>
+                </div>
+                <div class="chapter-card">
+                    <div class="num">04</div>
+                    <div class="label">Lorem ipsum dolor sit amet</div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 5: TWO COLUMN (Dark) ========== -->
+        <div class="slide slide-dark">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center;">Two Column Content Slide</h2>
+            <div class="two-col animate-in">
+                <div class="col-box">
+                    <h3>Left Column Title</h3>
+                    <ul>
+                        <li>First point goes here with supporting detail</li>
+                        <li>Second point explaining the concept</li>
+                        <li>Third point with additional context</li>
+                    </ul>
+                </div>
+                <div class="col-box">
+                    <h3>Right Column Title</h3>
+                    <ul>
+                        <li>First point goes here with supporting detail</li>
+                        <li>Second point explaining the concept</li>
+                        <li>Third point with additional context</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 6: CONTENT GRID 8-UP (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="content-grid animate-in">
+                <div class="content-card">
+                    <div class="card-num">01</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">02</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">03</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">04</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">05</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">06</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">07</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-num">08</div>
+                    <div class="card-desc">Lorem ipsum dolor sit amet adipiscing elit, sed diam</div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 7: TABLE (Dark) ========== -->
+        <div class="slide slide-dark">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center;">Agenda as a table</h2>
+            <table class="data-table animate-in">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Topic / Working Title</th>
+                        <th>Time</th>
+                        <th>Presenter</th>
+                        <th>Substitute</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Lorem Ipsum</td>
+                        <td>09.00 - 10.30</td>
+                        <td>Dr. Jane Public Average</td>
+                        <td>Prof. John Doe</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Escentalizer</td>
+                        <td>09.00 - 10.30</td>
+                        <td>Maria Mustermann</td>
+                        <td>Albrecht Platzhalter</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Dolores Sit Amet</td>
+                        <td>09.00 - 10.30</td>
+                        <td>Billy Tester</td>
+                        <td>Svering Dolores Sit</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Consetetur</td>
+                        <td>09.00 - 10.30</td>
+                        <td>Amet Lorem</td>
+                        <td>Ipsum Sadipscing</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Sadipscing Elitir</td>
+                        <td>09.00 - 10.30</td>
+                        <td>Sed Diam Voluptua</td>
+                        <td>Adam Accurat</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 8: PROCESS CHART (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center;">A process chart with four steps.</h2>
+            <div class="process-steps animate-in">
+                <div class="process-step">
+                    <div class="step-shape">01</div>
+                    <div class="step-title">A short description of the first step</div>
+                    <div class="step-desc">Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu.</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-shape">02</div>
+                    <div class="step-title">A short description of the second step</div>
+                    <div class="step-desc">Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu.</div>
+                </div>
+                <div class="process-step active-step">
+                    <div class="step-shape">03</div>
+                    <div class="step-title">A short description of the third step</div>
+                    <div class="step-desc">Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu.</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-shape">04</div>
+                    <div class="step-title">A short description of the fourth step</div>
+                    <div class="step-desc">Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu.</div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 9: STATEMENT / QUOTE (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="statement-box animate-in">
+                <p>Here is some <span class="bold-text">captivating text</span> which makes a key point without the need for additional content</p>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 10: BOLD STATEMENT (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="text-align: center; position: relative; z-index: 1;">
+                <h1 style="font-size: 2.6rem;">This headline is best suited for<br>a single, bold statement.</h1>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 11: BOLD STATEMENT (Dark) ========== -->
+        <div class="slide slide-dark">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="text-align: center; position: relative; z-index: 1;">
+                <h1 style="font-size: 2.4rem;">This slide is used for a single, bold statement on<br>a full-bleed image. This version with white text is<br>used for dark images.</h1>
+            </div>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 12: IMAGE + TEXT (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; max-width: 1200px; align-items: center; position: relative; z-index: 1;">
+                <div>
+                    <h2 class="animate-in" style="font-size: 2.4rem;">This is a single image slide with just a headline.</h2>
+                </div>
+                <div class="image-placeholder animate-in" onclick="handleImageClick(this)">
+                    <div class="upload-hint">
+                        <span class="hint-icon">&#128247;</span>
+                        <span>Click to upload image</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 13: TEAM (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center;">Team Slide</h2>
+            <div class="team-grid animate-in">
+                <div class="team-member">
+                    <div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div>
+                    <div class="member-name">Name</div>
+                    <div class="member-role">Role or Department</div>
+                </div>
+                <div class="team-member">
+                    <div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div>
+                    <div class="member-name">Name</div>
+                    <div class="member-role">Role or Department</div>
+                </div>
+                <div class="team-member">
+                    <div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div>
+                    <div class="member-name">Name</div>
+                    <div class="member-role">Role or Department</div>
+                </div>
+                <div class="team-member">
+                    <div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div>
+                    <div class="member-name">Name</div>
+                    <div class="member-role">Role or Department</div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 14: TIMELINE (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center;">Timeline</h2>
+            <div class="timeline animate-in">
+                <div class="timeline-item">
+                    <div class="tl-date">2024</div>
+                    <div class="tl-desc">A description with one or two lines of text.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-date">2025</div>
+                    <div class="tl-desc">A description with one or two lines of text.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-date">2026</div>
+                    <div class="tl-desc">A description with one or two lines of text.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-date">2027</div>
+                    <div class="tl-desc">A description with one or two lines of text.</div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE: TWO IMAGES WITH TEXT (Dark) ========== -->
+        <div class="slide slide-dark">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center; font-size: 2.2rem; margin-bottom: 20px;">Subtitle</h2>
+            <div class="two-image-cards animate-in">
+                <div class="img-text-card">
+                    <div class="img-text-card-header">text</div>
+                    <div class="img-text-card-image" onclick="handleImageClick(this)">
+                        <div class="upload-hint">
+                            <span>Upload Image</span>
+                        </div>
+                    </div>
+                    <div class="img-text-card-body">
+                        <ul>
+                            <li>Take advantage of AI foundation and Enterprise platform for in-house AI use case.</li>
+                            <li>Tracking AI use case and partnering with IT department.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="img-text-card">
+                    <div class="img-text-card-header">text</div>
+                    <div class="img-text-card-image" onclick="handleImageClick(this)">
+                        <div class="upload-hint">
+                            <span>Upload Image</span>
+                        </div>
+                    </div>
+                    <div class="img-text-card-body">
+                        <ul>
+                            <li>Strategic Fit: Benefit from global solutions: Workday &amp; ServiceNow AI functions.</li>
+                            <li>T4P AI Portfolio: Seeking synergy in HR AI solutions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="two-image-callout animate-in">
+                <div class="callout-arrow">&#9660;</div>
+                <p class="callout-text">Text in Sentence</p>
+            </div>
+            <div class="slide-footer">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE: INTERACTIVE TABLE (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.2em;">This is a table slide.<br>To add a table, click on the placeholder below.</h2>
+            <div class="interactive-table-wrap animate-in">
+                <div class="table-controls">
+                    <button onclick="tableAddCol(this)">+ Column</button>
+                    <button onclick="tableRemoveCol(this)">- Column</button>
+                    <button onclick="tableAddRow(this)">+ Row</button>
+                    <button onclick="tableRemoveRow(this)">- Row</button>
+                </div>
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Category 1</th>
+                            <th>Category 2</th>
+                            <th>Category 3</th>
+                            <th>Category 4</th>
+                            <th>Category 5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="animate-in" style="font-size: 0.75rem; color: var(--gray); text-align: center; margin-top: 14px;">This is an optional footnote. Use it however you need.</p>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE: TOPIC OVERVIEW (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.1em;">This slide can be used to give an overview of a topic.</h2>
+            <p class="subtitle animate-in" style="text-align: center; margin-bottom: 20px; color: var(--gray);">This subheadline provides additional information.</p>
+            <div class="topic-overview-layout animate-in">
+                <div class="topic-col topic-col-left">
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 01</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 03</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. At Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 05</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. At nisl amet.</li>
+                            <li>Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="topic-center">
+                    <div class="topic-center-circle" onclick="handleAvatarClick(this)">
+                        <span class="avatar-hint">Change Picture</span>
+                    </div>
+                    <div class="topic-spokes"></div>
+                </div>
+                <div class="topic-col topic-col-right">
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 02</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 04</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. At Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                    <div class="topic-item">
+                        <h4 class="topic-title">Topic 06</h4>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet sed runa. At nisl amet.</li>
+                            <li>Et semper semper enim sed urna eu</li>
+                            <li>sit ligula. At nisl amet eleifend</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE: 3 IMAGES WITH HEADLINE (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.3em;">This headline allows for a maximum of two lines of text.<br>You can use it for "action titles" that explain the slide content.</h2>
+            <div class="three-images-grid animate-in">
+                <div class="three-img-col">
+                    <div class="three-img-area" onclick="handleImageClick(this)">
+                        <div class="upload-hint">
+                            <span class="hint-icon">&#128247;</span>
+                            <span>Insert Picture (Fill)</span>
+                        </div>
+                    </div>
+                    <p class="three-img-desc">Ideally, a line of text should be about 65 characters, including blank spaces. The upper limit is about 80 characters.</p>
+                </div>
+                <div class="three-img-col">
+                    <div class="three-img-area" onclick="handleImageClick(this)">
+                        <div class="upload-hint">
+                            <span class="hint-icon">&#128247;</span>
+                            <span>Insert Picture (Fill)</span>
+                        </div>
+                    </div>
+                    <p class="three-img-desc">Ideally, a line of text should be about 65 characters, including blank spaces. The upper limit is about 80 characters.</p>
+                </div>
+                <div class="three-img-col">
+                    <div class="three-img-area" onclick="handleImageClick(this)">
+                        <div class="upload-hint">
+                            <span class="hint-icon">&#128247;</span>
+                            <span>Insert Picture (Fill)</span>
+                        </div>
+                    </div>
+                    <p class="three-img-desc">Ideally, a line of text should be about 65 characters, including blank spaces. The upper limit is about 80 characters.</p>
+                </div>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 15: BLANK / FREE FORM (Light) ========== -->
+        <div class="slide slide-light">
+            <div class="star-bg"></div>
+            <div class="mb-logo">
+                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
+                </svg>
+            </div>
+            <div style="text-align: center; position: relative; z-index: 1;">
+                <h2>This slide is intentionally left blank. Use it however you need.</h2>
+            </div>
+            <div class="slide-footer" style="color: var(--gray);">
+                <span>CHAPTER</span>
+                <span>TITLE / 2026</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">&#8592;</button>
+        <span class="slide-counter" id="slideCounter">1 / 15</span>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">&#8594;</button>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch Theme: Mixed / All Dark / All Light (T)">&#9681;</button>
+
+    <!-- Edit Toggle + Save + Cancel -->
+    <button class="edit-toggle-btn" id="editToggleBtn" onclick="toggleEditor()" title="Toggle Edit Mode (E)">&#9998;</button>
+    <button class="save-btn" id="saveBtn" onclick="saveNow()" title="Save to local drive (Ctrl+S)">&#128190;</button>
+    <button class="cancel-btn" id="cancelBtn" onclick="cancelEdit()" title="Cancel edits on this slide">&#10006;</button>
+
+    <!-- Edit Mode Bar -->
+    <div class="edit-mode-bar">EDIT MODE &mdash; Click text to edit | S = Save | C = Cancel | Arrow keys = Move element | E = Exit</div>
+
+    <!-- Slide Management Toolbar -->
+    <div class="slide-mgmt-bar">
+        <span class="mgmt-label">Add slide:</span>
+        <select id="slideTypeSelect">
+            <option value="dark-title">Dark Title</option>
+            <option value="light-title-image">Title with Image</option>
+            <option value="light-chapter">Light Chapter</option>
+            <option value="dark-twocol">Dark Two-Column</option>
+            <option value="dark-2images-text">2 Images + Text (Dark)</option>
+            <option value="light-grid">Light Content Grid</option>
+            <option value="dark-table">Dark Table</option>
+            <option value="light-interactive-table">Interactive Table (Light)</option>
+            <option value="light-process">Light Process</option>
+            <option value="light-statement">Light Statement</option>
+            <option value="dark-statement">Dark Statement</option>
+            <option value="light-image">Light Image+Text</option>
+            <option value="light-topic-overview">Topic Overview (6)</option>
+            <option value="light-3images">3 Images + Headline</option>
+            <option value="light-team">Light Team</option>
+            <option value="light-timeline">Light Timeline</option>
+            <option value="light-blank">Light Blank</option>
+        </select>
+        <button onclick="addSlide()">+ Add After</button>
+        <button onclick="duplicateSlide()">Duplicate</button>
+        <button class="danger" onclick="deleteSlide()">Delete Slide</button>
+        <button onclick="moveSlide(-1)">&#8592; Slide Left</button>
+        <button onclick="moveSlide(1)">Slide Right &#8594;</button>
+        <span class="mgmt-label" style="margin-left: 12px;">|</span>
+        <button onclick="nudgeElement(-5, 0)">&#8592; Nudge</button>
+        <button onclick="nudgeElement(5, 0)">Nudge &#8594;</button>
+        <button onclick="nudgeElement(0, -5)">&#8593; Nudge</button>
+        <button onclick="nudgeElement(0, 5)">&#8595; Nudge</button>
+        <span class="mgmt-label" style="margin-left: 12px;">|</span>
+        <button onclick="toggleCurrentSlideTheme()">Toggle This Slide Theme</button>
+        <span class="mgmt-label" style="margin-left: 12px;">|</span>
+        <span class="mgmt-label">Font:</span>
+        <button onclick="changeFontSize(-2)">A-</button>
+        <span class="font-size-display" id="fontSizeDisplay">--</span>
+        <button onclick="changeFontSize(2)">A+</button>
+        <select id="fontSizeSelect" onchange="setFontSize(this.value)">
+            <option value="">Size</option>
+            <option value="12">12px</option>
+            <option value="14">14px</option>
+            <option value="16">16px</option>
+            <option value="18">18px</option>
+            <option value="20">20px</option>
+            <option value="24">24px</option>
+            <option value="28">28px</option>
+            <option value="32">32px</option>
+            <option value="36">36px</option>
+            <option value="42">42px</option>
+            <option value="48">48px</option>
+            <option value="56">56px</option>
+            <option value="64">64px</option>
+            <option value="72">72px</option>
+        </select>
+    </div>
+
+    <!-- Icon Library Panel -->
+    <div class="icon-library" id="iconLibrary">
+        <div class="icon-lib-header">
+            <span>Icon Library</span>
+            <button class="icon-lib-close" onclick="toggleIconLibrary()">&times;</button>
+        </div>
+        <div class="icon-lib-search">
+            <input type="text" id="iconSearchInput" placeholder="Search icons..." oninput="filterIcons(this.value)">
+        </div>
+        <div class="icon-lib-categories" id="iconCategories">
+            <button class="icon-cat-btn active" onclick="filterCategory('all', this)">All</button>
+            <button class="icon-cat-btn" onclick="filterCategory('business', this)">Business</button>
+            <button class="icon-cat-btn" onclick="filterCategory('tech', this)">Tech</button>
+            <button class="icon-cat-btn" onclick="filterCategory('people', this)">People</button>
+            <button class="icon-cat-btn" onclick="filterCategory('objects', this)">Objects</button>
+            <button class="icon-cat-btn" onclick="filterCategory('arrows', this)">Arrows</button>
+            <button class="icon-cat-btn" onclick="filterCategory('symbols', this)">Symbols</button>
+        </div>
+        <div class="icon-lib-grid" id="iconGrid"></div>
+        <div class="icon-lib-hint">Click any text first, then click an icon to insert</div>
+    </div>
+
+    <!-- Icon Library Toggle Button (visible in edit mode) -->
+    <button class="icon-lib-toggle" id="iconLibToggle" onclick="toggleIconLibrary()" title="Icon Library (I)">&#127912;</button>
+
+    <!-- Save Toast -->
+    <div class="save-toast" id="saveToast">Saved &#10004;</div>
+
+    <script>
+        let currentSlide = 0;
+        let editMode = false;
+        let fileHandle = null;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const presentation = document.getElementById('presentation');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function getSlides() {
+            return slides;
+        }
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+            progressBar.style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+            slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+            if (editMode) {
+                snapshotCurrentSlide();
+                enableInlineEdit();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+            if (e.target.isContentEditable) {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    e.preventDefault();
+                }
+                return;
+            }
+            if (e.key === 'e' || e.key === 'E') {
+                e.preventDefault();
+                toggleEditor();
+            } else if (editMode && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                saveNow();
+            } else if (editMode && (e.key === 'c' || e.key === 'C')) {
+                e.preventDefault();
+                cancelEdit();
+            } else if (editMode && (e.key === 'i' || e.key === 'I')) {
+                e.preventDefault();
+                toggleIconLibrary();
+            } else if (editMode && e.key === 'ArrowLeft') {
+                e.preventDefault();
+                nudgeElement(-2, 0);
+            } else if (editMode && e.key === 'ArrowRight') {
+                e.preventDefault();
+                nudgeElement(2, 0);
+            } else if (editMode && e.key === 'ArrowUp') {
+                e.preventDefault();
+                nudgeElement(0, -2);
+            } else if (editMode && e.key === 'ArrowDown') {
+                e.preventDefault();
+                nudgeElement(0, 2);
+            } else if (e.key === 't' || e.key === 'T') {
+                e.preventDefault();
+                toggleTheme();
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+
+        updateSlide();
+
+        // ===== THEME TOGGLE =====
+        let themeState = 'mixed'; // 'mixed' | 'all-dark' | 'all-light'
+
+        function toggleTheme() {
+            const btn = document.getElementById('themeToggleBtn');
+            document.body.classList.remove('theme-all-dark', 'theme-all-light');
+
+            if (themeState === 'mixed') {
+                themeState = 'all-dark';
+                document.body.classList.add('theme-all-dark');
+                btn.innerHTML = '&#9790;';
+                btn.title = 'Current: All Dark | Click for All Light (T)';
+            } else if (themeState === 'all-dark') {
+                themeState = 'all-light';
+                document.body.classList.add('theme-all-light');
+                btn.innerHTML = '&#9728;';
+                btn.title = 'Current: All Light | Click for Mixed (T)';
+            } else {
+                themeState = 'mixed';
+                btn.innerHTML = '&#9681;';
+                btn.title = 'Current: Mixed | Click for All Dark (T)';
+            }
+        }
+
+        // ===== EDIT MODE =====
+        function toggleEditor() {
+            editMode = !editMode;
+            document.body.classList.toggle('edit-mode', editMode);
+            const btn = document.getElementById('editToggleBtn');
+
+            if (editMode) {
+                btn.innerHTML = '&#10004;';
+                btn.title = 'Save & Exit Edit Mode';
+                snapshotCurrentSlide();
+                enableInlineEdit();
+            } else {
+                saveAndExit();
+            }
+        }
+
+        function enableInlineEdit() {
+            disableInlineEdit();
+            const slides = getSlides();
+            const activeSlide = slides[currentSlide];
+            const editables = activeSlide.querySelectorAll('h1, h2, h3, h4, p, li, td, th, .subtitle, .label, .num, .card-num, .card-title, .card-desc, .member-name, .member-role, .agenda-title, .agenda-time, .step-title, .step-desc, .tl-date, .tl-desc, .bold-text, .topic-title, .three-img-desc, .img-text-card-header, .callout-text');
+            editables.forEach(el => {
+                if (el.closest('.mb-logo') || el.closest('.slide-footer') || el.closest('.nav-controls') || el.closest('.star-bg')) return;
+                if (!el.textContent.trim()) return;
+                el.setAttribute('contenteditable', 'true');
+            });
+        }
+
+        function disableInlineEdit() {
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+        }
+
+        async function saveAndExit() {
+            disableInlineEdit();
+            const btn = document.getElementById('editToggleBtn');
+            btn.innerHTML = '&#9998;';
+            btn.title = 'Toggle Edit Mode (E)';
+            try {
+                await saveFile();
+                showSaveToast();
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Save failed:', err);
+                }
+            }
+        }
+
+        async function saveFile() {
+            const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            if (!fileHandle) {
+                fileHandle = await window.showSaveFilePicker({
+                    suggestedName: 'template-presentation.html',
+                    types: [{ description: 'HTML Files', accept: { 'text/html': ['.html'] } }]
+                });
+            }
+            const writable = await fileHandle.createWritable();
+            await writable.write(html);
+            await writable.close();
+        }
+
+        function showSaveToast() {
+            const toast = document.getElementById('saveToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ===== NUDGE ELEMENT =====
+        function nudgeElement(dx, dy) {
+            const el = lastFocusedEditable;
+            if (!el) return;
+            const computed = window.getComputedStyle(el);
+            if (computed.position === 'static') {
+                el.style.position = 'relative';
+            }
+            const currentLeft = parseFloat(el.style.left) || 0;
+            const currentTop = parseFloat(el.style.top) || 0;
+            el.style.left = (currentLeft + dx) + 'px';
+            el.style.top = (currentTop + dy) + 'px';
+        }
+
+        // ===== SAVE & CANCEL =====
+        let slideSnapshotHTML = '';
+
+        function snapshotCurrentSlide() {
+            const slides = getSlides();
+            slideSnapshotHTML = slides[currentSlide].innerHTML;
+        }
+
+        async function saveNow() {
+            disableInlineEdit();
+            try {
+                await saveFile();
+                showSaveToast();
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Save failed:', err);
+                }
+            }
+            if (editMode) enableInlineEdit();
+        }
+
+        function cancelEdit() {
+            if (!slideSnapshotHTML) return;
+            const slides = getSlides();
+            slides[currentSlide].innerHTML = slideSnapshotHTML;
+            slideSnapshotHTML = '';
+            if (editMode) enableInlineEdit();
+            showCancelToast();
+        }
+
+        function showCancelToast() {
+            const toast = document.getElementById('saveToast');
+            toast.textContent = 'Edits cancelled ↩';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.textContent = 'Saved ✔';
+            }, 2000);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (editMode) saveNow();
+            }
+        });
+
+        // ===== ICON LIBRARY =====
+        const ICON_DATA = [
+            { icon: '\u{1F4BC}', name: 'briefcase', cat: 'business' },
+            { icon: '\u{1F4B0}', name: 'money bag', cat: 'business' },
+            { icon: '\u{1F4B5}', name: 'dollar', cat: 'business' },
+            { icon: '\u{1F4C8}', name: 'chart up', cat: 'business' },
+            { icon: '\u{1F4C9}', name: 'chart down', cat: 'business' },
+            { icon: '\u{1F4CA}', name: 'bar chart', cat: 'business' },
+            { icon: '\u{1F4CB}', name: 'clipboard', cat: 'business' },
+            { icon: '\u{1F3AF}', name: 'target', cat: 'business' },
+            { icon: '\u{1F3C6}', name: 'trophy', cat: 'business' },
+            { icon: '\u{1F4A1}', name: 'lightbulb idea', cat: 'business' },
+            { icon: '\u{2699}', name: 'gear settings', cat: 'business' },
+            { icon: '\u{1F4CC}', name: 'pin', cat: 'business' },
+            { icon: '\u{1F4CD}', name: 'round pin', cat: 'business' },
+            { icon: '\u{1F4CE}', name: 'paperclip', cat: 'business' },
+            { icon: '\u{1F4DD}', name: 'memo write', cat: 'business' },
+            { icon: '\u{1F4C5}', name: 'calendar', cat: 'business' },
+            { icon: '\u{1F4C1}', name: 'folder', cat: 'business' },
+            { icon: '\u{1F4E7}', name: 'email', cat: 'business' },
+            { icon: '\u{260E}', name: 'phone', cat: 'business' },
+            { icon: '\u{1F4DE}', name: 'telephone', cat: 'business' },
+            { icon: '\u{1F5C3}', name: 'file box', cat: 'business' },
+            { icon: '\u{1F4BB}', name: 'laptop', cat: 'tech' },
+            { icon: '\u{1F4F1}', name: 'mobile phone', cat: 'tech' },
+            { icon: '\u{2601}', name: 'cloud', cat: 'tech' },
+            { icon: '\u{1F517}', name: 'link chain', cat: 'tech' },
+            { icon: '\u{1F512}', name: 'lock security', cat: 'tech' },
+            { icon: '\u{1F513}', name: 'unlock', cat: 'tech' },
+            { icon: '\u{1F4E1}', name: 'satellite antenna', cat: 'tech' },
+            { icon: '\u{1F5A5}', name: 'desktop computer', cat: 'tech' },
+            { icon: '\u{2328}', name: 'keyboard', cat: 'tech' },
+            { icon: '\u{1F916}', name: 'robot AI', cat: 'tech' },
+            { icon: '\u{1F50D}', name: 'search magnify', cat: 'tech' },
+            { icon: '\u{1F310}', name: 'globe web', cat: 'tech' },
+            { icon: '\u{1F4F6}', name: 'signal wifi', cat: 'tech' },
+            { icon: '\u{1F6E1}', name: 'shield protect', cat: 'tech' },
+            { icon: '\u{1F680}', name: 'rocket launch', cat: 'tech' },
+            { icon: '\u{26A1}', name: 'lightning bolt', cat: 'tech' },
+            { icon: '\u{1F504}', name: 'refresh sync', cat: 'tech' },
+            { icon: '\u{1F50C}', name: 'plug connect', cat: 'tech' },
+            { icon: '\u{1F4BE}', name: 'floppy disk save', cat: 'tech' },
+            { icon: '\u{1F464}', name: 'person user', cat: 'people' },
+            { icon: '\u{1F465}', name: 'people group', cat: 'people' },
+            { icon: '\u{1F4AC}', name: 'speech chat', cat: 'people' },
+            { icon: '\u{1F4AD}', name: 'thought bubble', cat: 'people' },
+            { icon: '\u{1F91D}', name: 'handshake deal', cat: 'people' },
+            { icon: '\u{1F44D}', name: 'thumbs up', cat: 'people' },
+            { icon: '\u{1F44E}', name: 'thumbs down', cat: 'people' },
+            { icon: '\u{270B}', name: 'raised hand', cat: 'people' },
+            { icon: '\u{1F4AA}', name: 'strong muscle', cat: 'people' },
+            { icon: '\u{1F9E0}', name: 'brain think', cat: 'people' },
+            { icon: '\u{1F393}', name: 'graduation learn', cat: 'people' },
+            { icon: '\u{1F468}\u{200D}\u{1F4BB}', name: 'developer coder', cat: 'people' },
+            { icon: '\u{1F46B}', name: 'partners', cat: 'people' },
+            { icon: '\u{1F3E2}', name: 'office building', cat: 'people' },
+            { icon: '\u{1F4DA}', name: 'books knowledge', cat: 'objects' },
+            { icon: '\u{1F4D6}', name: 'open book', cat: 'objects' },
+            { icon: '\u{1F3E0}', name: 'home house', cat: 'objects' },
+            { icon: '\u{1F6A9}', name: 'flag milestone', cat: 'objects' },
+            { icon: '\u{2B50}', name: 'star', cat: 'objects' },
+            { icon: '\u{1F31F}', name: 'glowing star', cat: 'objects' },
+            { icon: '\u{1F525}', name: 'fire hot', cat: 'objects' },
+            { icon: '\u{1F48E}', name: 'diamond gem', cat: 'objects' },
+            { icon: '\u{1F3B2}', name: 'dice game', cat: 'objects' },
+            { icon: '\u{1F50E}', name: 'magnifier right', cat: 'objects' },
+            { icon: '\u{1F4F7}', name: 'camera photo', cat: 'objects' },
+            { icon: '\u{23F0}', name: 'alarm clock time', cat: 'objects' },
+            { icon: '\u{1F511}', name: 'key access', cat: 'objects' },
+            { icon: '\u{1F528}', name: 'hammer tool', cat: 'objects' },
+            { icon: '\u{1F527}', name: 'wrench fix', cat: 'objects' },
+            { icon: '\u{1F3A8}', name: 'palette design', cat: 'objects' },
+            { icon: '\u{27A1}', name: 'arrow right', cat: 'arrows' },
+            { icon: '\u{2B05}', name: 'arrow left', cat: 'arrows' },
+            { icon: '\u{2B06}', name: 'arrow up', cat: 'arrows' },
+            { icon: '\u{2B07}', name: 'arrow down', cat: 'arrows' },
+            { icon: '\u{2197}', name: 'arrow up right', cat: 'arrows' },
+            { icon: '\u{2198}', name: 'arrow down right', cat: 'arrows' },
+            { icon: '\u{2196}', name: 'arrow up left', cat: 'arrows' },
+            { icon: '\u{2199}', name: 'arrow down left', cat: 'arrows' },
+            { icon: '\u{21BB}', name: 'clockwise cycle', cat: 'arrows' },
+            { icon: '\u{1F503}', name: 'arrows rotate', cat: 'arrows' },
+            { icon: '\u{25B6}', name: 'play triangle', cat: 'arrows' },
+            { icon: '\u{25C0}', name: 'left triangle', cat: 'arrows' },
+            { icon: '\u{1F53C}', name: 'up small', cat: 'arrows' },
+            { icon: '\u{1F53D}', name: 'down small', cat: 'arrows' },
+            { icon: '\u{2714}', name: 'check mark', cat: 'symbols' },
+            { icon: '\u{2716}', name: 'cross x', cat: 'symbols' },
+            { icon: '\u{2795}', name: 'plus add', cat: 'symbols' },
+            { icon: '\u{2796}', name: 'minus', cat: 'symbols' },
+            { icon: '\u{2757}', name: 'exclamation alert', cat: 'symbols' },
+            { icon: '\u{2753}', name: 'question', cat: 'symbols' },
+            { icon: '\u{2B55}', name: 'circle', cat: 'symbols' },
+            { icon: '\u{1F534}', name: 'red circle', cat: 'symbols' },
+            { icon: '\u{1F7E2}', name: 'green circle', cat: 'symbols' },
+            { icon: '\u{1F7E1}', name: 'yellow circle', cat: 'symbols' },
+            { icon: '\u{1F535}', name: 'blue circle', cat: 'symbols' },
+            { icon: '\u{1F7E0}', name: 'orange circle', cat: 'symbols' },
+            { icon: '\u{25AA}', name: 'small black square', cat: 'symbols' },
+            { icon: '\u{25AB}', name: 'small white square', cat: 'symbols' },
+            { icon: '\u{1F4A0}', name: 'diamond shape', cat: 'symbols' },
+            { icon: '\u{26A0}', name: 'warning', cat: 'symbols' },
+            { icon: '\u{2139}', name: 'info', cat: 'symbols' },
+            { icon: '\u{267B}', name: 'recycle', cat: 'symbols' },
+            { icon: '\u{1F501}', name: 'repeat loop', cat: 'symbols' },
+            { icon: '\u{2764}', name: 'heart love', cat: 'symbols' },
+        ];
+
+        function buildIconGrid() {
+            const grid = document.getElementById('iconGrid');
+            grid.innerHTML = '';
+            ICON_DATA.forEach((item, idx) => {
+                const el = document.createElement('div');
+                el.className = 'icon-lib-item';
+                el.textContent = item.icon;
+                el.title = item.name;
+                el.dataset.cat = item.cat;
+                el.dataset.name = item.name;
+                el.onclick = function() { insertIcon(item.icon); };
+                grid.appendChild(el);
+            });
+        }
+
+        function toggleIconLibrary() {
+            const panel = document.getElementById('iconLibrary');
+            panel.classList.toggle('open');
+        }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.icon-cat-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            document.querySelectorAll('.icon-lib-item').forEach(el => {
+                if (cat === 'all' || el.dataset.cat === cat) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+            document.getElementById('iconSearchInput').value = '';
+        }
+
+        function filterIcons(query) {
+            const q = query.toLowerCase();
+            document.querySelectorAll('.icon-cat-btn').forEach(b => b.classList.remove('active'));
+            if (!q) {
+                document.querySelector('.icon-cat-btn').classList.add('active');
+            }
+            document.querySelectorAll('.icon-lib-item').forEach(el => {
+                if (!q || el.dataset.name.includes(q)) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        function insertIcon(icon) {
+            const el = lastFocusedEditable;
+            if (!el || !el.isContentEditable) {
+                const activeSlide = getSlides()[currentSlide];
+                const firstEditable = activeSlide.querySelector('[contenteditable="true"]');
+                if (firstEditable) {
+                    firstEditable.focus();
+                    document.execCommand('insertText', false, icon);
+                }
+                return;
+            }
+            el.focus();
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0 && el.contains(sel.anchorNode)) {
+                document.execCommand('insertText', false, icon);
+            } else {
+                el.focus();
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                document.execCommand('insertText', false, icon);
+            }
+        }
+
+        buildIconGrid();
+
+        // ===== FONT SIZE CONTROLS =====
+        let lastFocusedEditable = null;
+
+        document.addEventListener('focusin', function(e) {
+            if (e.target.isContentEditable) {
+                lastFocusedEditable = e.target;
+                updateFontSizeDisplay(e.target);
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.isContentEditable) {
+                lastFocusedEditable = e.target;
+                updateFontSizeDisplay(e.target);
+            }
+        });
+
+        function updateFontSizeDisplay(el) {
+            if (!el) return;
+            const computed = window.getComputedStyle(el);
+            const size = Math.round(parseFloat(computed.fontSize));
+            document.getElementById('fontSizeDisplay').textContent = size + 'px';
+            document.getElementById('fontSizeSelect').value = '';
+        }
+
+        function changeFontSize(delta) {
+            const el = lastFocusedEditable;
+            if (!el) return;
+            const computed = window.getComputedStyle(el);
+            const currentSize = parseFloat(computed.fontSize);
+            const newSize = Math.max(8, Math.min(120, currentSize + delta));
+            el.style.fontSize = newSize + 'px';
+            updateFontSizeDisplay(el);
+        }
+
+        function setFontSize(value) {
+            if (!value) return;
+            const el = lastFocusedEditable;
+            if (!el) return;
+            el.style.fontSize = value + 'px';
+            updateFontSizeDisplay(el);
+        }
+
+        // ===== INTERACTIVE TABLE =====
+        function getTableFromBtn(btn) {
+            return btn.closest('.interactive-table-wrap').querySelector('.interactive-table');
+        }
+
+        function tableAddCol(btn) {
+            const table = getTableFromBtn(btn);
+            const headerRow = table.querySelector('thead tr');
+            const th = document.createElement('th');
+            th.textContent = 'New';
+            th.setAttribute('contenteditable', 'true');
+            headerRow.appendChild(th);
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const td = document.createElement('td');
+                td.setAttribute('contenteditable', 'true');
+                row.appendChild(td);
+            });
+        }
+
+        function tableRemoveCol(btn) {
+            const table = getTableFromBtn(btn);
+            const headerRow = table.querySelector('thead tr');
+            if (headerRow.children.length <= 1) return;
+            headerRow.removeChild(headerRow.lastElementChild);
+            table.querySelectorAll('tbody tr').forEach(row => {
+                if (row.lastElementChild) row.removeChild(row.lastElementChild);
+            });
+        }
+
+        function tableAddRow(btn) {
+            const table = getTableFromBtn(btn);
+            const tbody = table.querySelector('tbody');
+            const colCount = table.querySelector('thead tr').children.length;
+            const tr = document.createElement('tr');
+            for (let i = 0; i < colCount; i++) {
+                const td = document.createElement('td');
+                td.setAttribute('contenteditable', 'true');
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+
+        function tableRemoveRow(btn) {
+            const table = getTableFromBtn(btn);
+            const tbody = table.querySelector('tbody');
+            if (tbody.children.length <= 1) return;
+            tbody.removeChild(tbody.lastElementChild);
+        }
+
+        function enableTableEditing() {
+            document.querySelectorAll('.interactive-table').forEach(table => {
+                table.querySelectorAll('th, td').forEach(cell => {
+                    cell.setAttribute('contenteditable', 'true');
+                });
+            });
+        }
+
+        enableTableEditing();
+
+        // ===== IMAGE & AVATAR UPLOAD =====
+        function handleAvatarClick(avatar) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    avatar.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.alt = 'Team member photo';
+                    avatar.appendChild(img);
+                    const overlay = document.createElement('div');
+                    overlay.className = 'avatar-overlay';
+                    overlay.textContent = 'Click to replace';
+                    avatar.appendChild(overlay);
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        function handleImageClick(placeholder) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    placeholder.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.alt = 'Uploaded image';
+                    placeholder.appendChild(img);
+                    const overlay = document.createElement('div');
+                    overlay.className = 'img-overlay';
+                    overlay.textContent = 'Click to replace';
+                    placeholder.appendChild(overlay);
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        }
+
+        // ===== SLIDE MANAGEMENT =====
+        const SLIDE_TEMPLATES = {
+            'dark-title': `
+                <div class="slide slide-dark">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="text-align: center; position: relative; z-index: 1;">
+                        <h1>New Slide Title</h1>
+                        <p class="subtitle">Subtitle text</p>
+                    </div>
+                    <div class="slide-footer"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-title-image': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div class="title-image-layout" style="position: relative; z-index: 1; width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; gap: 0;">
+                        <div class="title-image-area" onclick="handleImageClick(this)"><div class="upload-hint"><span class="hint-icon">&#128247;</span><span>Insert Picture (Fill)</span></div></div>
+                        <div class="title-image-text"><h1 style="font-size: 3rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.15em;">TITLE</h1><p class="subtitle">Subheadline</p></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-chapter': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="text-align: center; position: relative; z-index: 1;"><h1 style="font-size: 3rem; text-transform: uppercase; letter-spacing: 0.15em;">CHAPTER HEADING</h1></div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'dark-2images-text': `
+                <div class="slide slide-dark">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center; font-size: 2.2rem; margin-bottom: 20px;">Subtitle</h2>
+                    <div class="two-image-cards animate-in">
+                        <div class="img-text-card">
+                            <div class="img-text-card-header">text</div>
+                            <div class="img-text-card-image" onclick="handleImageClick(this)"><div class="upload-hint"><span>Upload Image</span></div></div>
+                            <div class="img-text-card-body"><ul><li>First point goes here.</li><li>Second point goes here.</li></ul></div>
+                        </div>
+                        <div class="img-text-card">
+                            <div class="img-text-card-header">text</div>
+                            <div class="img-text-card-image" onclick="handleImageClick(this)"><div class="upload-hint"><span>Upload Image</span></div></div>
+                            <div class="img-text-card-body"><ul><li>First point goes here.</li><li>Second point goes here.</li></ul></div>
+                        </div>
+                    </div>
+                    <div class="two-image-callout animate-in"><div class="callout-arrow">&#9660;</div><p class="callout-text">Text in Sentence</p></div>
+                    <div class="slide-footer"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'dark-twocol': `
+                <div class="slide slide-dark">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center;">Slide Title</h2>
+                    <div class="two-col animate-in">
+                        <div class="col-box"><h3>Left Column</h3><ul><li>Point one</li><li>Point two</li></ul></div>
+                        <div class="col-box"><h3>Right Column</h3><ul><li>Point one</li><li>Point two</li></ul></div>
+                    </div>
+                    <div class="slide-footer"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-grid': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div class="content-grid animate-in">
+                        <div class="content-card"><div class="card-num">01</div><div class="card-desc">Description text</div></div>
+                        <div class="content-card"><div class="card-num">02</div><div class="card-desc">Description text</div></div>
+                        <div class="content-card"><div class="card-num">03</div><div class="card-desc">Description text</div></div>
+                        <div class="content-card"><div class="card-num">04</div><div class="card-desc">Description text</div></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'dark-table': `
+                <div class="slide slide-dark">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center;">Table Title</h2>
+                    <table class="data-table animate-in"><thead><tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr></thead><tbody><tr><td>Data</td><td>Data</td><td>Data</td></tr><tr><td>Data</td><td>Data</td><td>Data</td></tr></tbody></table>
+                    <div class="slide-footer"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-interactive-table': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.2em;">Table Title</h2>
+                    <div class="interactive-table-wrap animate-in">
+                        <div class="table-controls"><button onclick="tableAddCol(this)">+ Column</button><button onclick="tableRemoveCol(this)">- Column</button><button onclick="tableAddRow(this)">+ Row</button><button onclick="tableRemoveRow(this)">- Row</button></div>
+                        <table class="interactive-table"><thead><tr><th contenteditable="true">Category 1</th><th contenteditable="true">Category 2</th><th contenteditable="true">Category 3</th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-process': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center;">Process Title</h2>
+                    <div class="process-steps animate-in">
+                        <div class="process-step"><div class="step-shape">01</div><div class="step-title">Step one</div><div class="step-desc">Description</div></div>
+                        <div class="process-step"><div class="step-shape">02</div><div class="step-title">Step two</div><div class="step-desc">Description</div></div>
+                        <div class="process-step active-step"><div class="step-shape">03</div><div class="step-title">Step three</div><div class="step-desc">Description</div></div>
+                        <div class="process-step"><div class="step-shape">04</div><div class="step-title">Step four</div><div class="step-desc">Description</div></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-statement': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="text-align: center; position: relative; z-index: 1;"><h1 style="font-size: 2.6rem;">This headline is best suited for a single, bold statement.</h1></div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'dark-statement': `
+                <div class="slide slide-dark">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="text-align: center; position: relative; z-index: 1;"><h1 style="font-size: 2.4rem;">Bold statement on dark background.</h1></div>
+                    <div class="slide-footer"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-image': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; max-width: 1200px; align-items: center; position: relative; z-index: 1;">
+                        <div><h2 class="animate-in" style="font-size: 2.4rem;">Image slide headline.</h2></div>
+                        <div class="image-placeholder animate-in" onclick="handleImageClick(this)"><div class="upload-hint"><span class="hint-icon">&#128247;</span><span>Click to upload image</span></div></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-topic-overview': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.1em;">Topic overview headline.</h2>
+                    <p class="subtitle animate-in" style="text-align: center; margin-bottom: 20px; color: var(--gray);">Subheadline provides additional information.</p>
+                    <div class="topic-overview-layout animate-in">
+                        <div class="topic-col topic-col-left">
+                            <div class="topic-item"><h4 class="topic-title">Topic 01</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                            <div class="topic-item"><h4 class="topic-title">Topic 03</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                            <div class="topic-item"><h4 class="topic-title">Topic 05</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                        </div>
+                        <div class="topic-center">
+                            <div class="topic-center-circle" onclick="handleAvatarClick(this)"><span class="avatar-hint">Change Picture</span></div>
+                            <div class="topic-spokes"></div>
+                        </div>
+                        <div class="topic-col topic-col-right">
+                            <div class="topic-item"><h4 class="topic-title">Topic 02</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                            <div class="topic-item"><h4 class="topic-title">Topic 04</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                            <div class="topic-item"><h4 class="topic-title">Topic 06</h4><ul><li>Point one</li><li>Point two</li></ul></div>
+                        </div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-3images': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center; font-size: 2.4rem; margin-bottom: 0.3em;">Headline for this slide goes here.</h2>
+                    <div class="three-images-grid animate-in">
+                        <div class="three-img-col"><div class="three-img-area" onclick="handleImageClick(this)"><div class="upload-hint"><span class="hint-icon">&#128247;</span><span>Insert Picture (Fill)</span></div></div><p class="three-img-desc">Description text for this image.</p></div>
+                        <div class="three-img-col"><div class="three-img-area" onclick="handleImageClick(this)"><div class="upload-hint"><span class="hint-icon">&#128247;</span><span>Insert Picture (Fill)</span></div></div><p class="three-img-desc">Description text for this image.</p></div>
+                        <div class="three-img-col"><div class="three-img-area" onclick="handleImageClick(this)"><div class="upload-hint"><span class="hint-icon">&#128247;</span><span>Insert Picture (Fill)</span></div></div><p class="three-img-desc">Description text for this image.</p></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-team': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center;">Team Slide</h2>
+                    <div class="team-grid animate-in">
+                        <div class="team-member"><div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div><div class="member-name">Name</div><div class="member-role">Role</div></div>
+                        <div class="team-member"><div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div><div class="member-name">Name</div><div class="member-role">Role</div></div>
+                        <div class="team-member"><div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div><div class="member-name">Name</div><div class="member-role">Role</div></div>
+                        <div class="team-member"><div class="avatar" onclick="handleAvatarClick(this)"><span class="avatar-hint">&#128247;</span></div><div class="member-name">Name</div><div class="member-role">Role</div></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-timeline': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <h2 class="animate-in" style="text-align: center;">Timeline</h2>
+                    <div class="timeline animate-in">
+                        <div class="timeline-item"><div class="tl-date">2024</div><div class="tl-desc">Description text.</div></div>
+                        <div class="timeline-item"><div class="tl-date">2025</div><div class="tl-desc">Description text.</div></div>
+                        <div class="timeline-item"><div class="tl-date">2026</div><div class="tl-desc">Description text.</div></div>
+                        <div class="timeline-item"><div class="tl-date">2027</div><div class="tl-desc">Description text.</div></div>
+                    </div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`,
+            'light-blank': `
+                <div class="slide slide-light">
+                    <div class="star-bg"></div>
+                    <div class="mb-logo"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1.5"/><circle cx="40" cy="40" r="32" stroke="currentColor" stroke-width="1"/><path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/></svg></div>
+                    <div style="text-align: center; position: relative; z-index: 1;"><h2>This slide is intentionally left blank.</h2></div>
+                    <div class="slide-footer" style="color: var(--gray);"><span>CHAPTER</span><span>TITLE / 2026</span></div>
+                </div>`
+        };
+
+        function addSlide() {
+            const type = document.getElementById('slideTypeSelect').value;
+            const template = SLIDE_TEMPLATES[type];
+            if (!template) return;
+
+            const slides = getSlides();
+            const currentEl = slides[currentSlide];
+            const temp = document.createElement('div');
+            temp.innerHTML = template.trim();
+            const newSlide = temp.firstElementChild;
+
+            if (currentEl.nextElementSibling) {
+                presentation.insertBefore(newSlide, currentEl.nextElementSibling);
+            } else {
+                presentation.appendChild(newSlide);
+            }
+            currentSlide++;
+            updateSlide();
+        }
+
+        function duplicateSlide() {
+            const slides = getSlides();
+            const currentEl = slides[currentSlide];
+            const clone = currentEl.cloneNode(true);
+            clone.classList.remove('active', 'prev');
+
+            if (currentEl.nextElementSibling) {
+                presentation.insertBefore(clone, currentEl.nextElementSibling);
+            } else {
+                presentation.appendChild(clone);
+            }
+            currentSlide++;
+            updateSlide();
+        }
+
+        function deleteSlide() {
+            const slides = getSlides();
+            if (slides.length <= 1) return;
+            if (!confirm('Delete this slide?')) return;
+
+            const currentEl = slides[currentSlide];
+            presentation.removeChild(currentEl);
+            if (currentSlide >= getSlides().length) {
+                currentSlide = getSlides().length - 1;
+            }
+            updateSlide();
+        }
+
+        function toggleCurrentSlideTheme() {
+            const slides = getSlides();
+            const currentEl = slides[currentSlide];
+            if (currentEl.classList.contains('slide-dark')) {
+                currentEl.classList.remove('slide-dark');
+                currentEl.classList.add('slide-light');
+            } else {
+                currentEl.classList.remove('slide-light');
+                currentEl.classList.add('slide-dark');
+            }
+        }
+
+        function moveSlide(direction) {
+            const slides = getSlides();
+            const newIndex = currentSlide + direction;
+            if (newIndex < 0 || newIndex >= slides.length) return;
+
+            const currentEl = slides[currentSlide];
+            const targetEl = slides[newIndex];
+
+            if (direction === 1) {
+                presentation.insertBefore(targetEl, currentEl);
+            } else {
+                presentation.insertBefore(currentEl, targetEl);
+            }
+            currentSlide = newIndex;
+            updateSlide();
+        }
+    </script>
+</body>
+</html>
