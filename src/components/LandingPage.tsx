@@ -2,40 +2,27 @@ import { useState, useRef, useEffect } from 'react'
 import { v4 as uuid } from 'uuid'
 import { useDeckStore } from '@/store/deck-store'
 import { parseFileToMarkdown } from '@/lib/file-parser'
-import type { Deck, Slide, SlideComponent, SlideLayoutType, SlideTheme } from '@/types/deck'
+import type { Deck, Slide, SlideComponent, SlideTheme } from '@/types/deck'
 import { Paperclip, Sparkles, LayoutGrid, Send, ArrowLeft } from 'lucide-react'
-import { generateUseCaseTimelineDeck } from '@/templates/usecase-timeline'
-import { generatePetTemplateDeck } from '@/templates/template-pet'
 import { callLLM } from '@/lib/llm'
 
 interface Props {
   onGenerated: () => void
+  /** Opens the Template Marketplace (App-level view switch). */
+  onOpenMarketplace: () => void
 }
 
-type Mode = 'ai' | 'template'
 type AiPhase = 'input' | 'conversation' | 'generating'
 type SlideType = 'horizontal' | 'vertical' | 'newsletter'
-
-type TemplateKind = 'standard' | 'meeting' | 'workshop' | 'usecase-timeline' | 'pet-template'
-interface TemplateEntry {
-  label: string
-  description: string
-  content: string
-  kind?: TemplateKind
-  featured?: boolean
-  slides?: number
-}
 
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
 }
 
-export function LandingPage({ onGenerated }: Props) {
-  const [mode, setMode] = useState<Mode>('ai')
+export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
   const [content, setContent] = useState('')
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; text: string }[]>([])
-  const [generating, setGenerating] = useState(false)
   const [aiPhase, setAiPhase] = useState<AiPhase>('input')
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatInput, setChatInput] = useState('')
@@ -46,174 +33,9 @@ export function LandingPage({ onGenerated }: Props) {
   const chatEndRef = useRef<HTMLDivElement>(null)
   const { decks, addDeck, setActiveDeck } = useDeckStore()
 
-  const templates: TemplateEntry[] = [
-    {
-      label: 'PET Presentation Template',
-      description: 'PET signature template — canonical MB master deck (20 slides, dark/light)',
-      content: 'PET Presentation Template — the canonical Mercedes-Benz People & Enterprise Tech master deck.',
-      kind: 'pet-template',
-      featured: true,
-      slides: 20,
-    },
-    {
-      label: 'Decision Analysis',
-      description: 'Structured decision framework',
-      content: `# Decision Analysis
-## AI Platform Selection for HR Automation
-
-### Decision Context
-- Need to select AI platform for HR service automation
-- Must integrate with existing ServiceNow infrastructure
-- Budget approved for FY2026-2027 implementation
-
-### Options Under Evaluation
-- Option A: ServiceNow GenAI (native integration)
-- Option B: Azure OpenAI + custom orchestration
-- Option C: Hybrid approach (ServiceNow + external LLM)
-
-### Evaluation Criteria
-- Integration complexity with current stack
-- Total cost of ownership (3-year horizon)
-- Data residency and privacy compliance (China regulations)
-- Scalability and multi-language support (EN/CN/DE)
-- Vendor lock-in risk
-
-### Comparative Assessment
-- ServiceNow GenAI: Low integration effort, higher per-transaction cost, limited CN language quality
-- Azure OpenAI: Moderate integration, flexible pricing, strong multilingual, requires custom build
-- Hybrid: Best of both, highest initial complexity, most future-proof
-
-### Risk Analysis
-- Data sovereignty: China PIPL compliance mandatory
-- Vendor dependency: Single-vendor risk vs. multi-vendor complexity
-- Timeline: Native solutions faster to deploy, custom solutions more adaptable
-- Skills gap: Team readiness for custom AI development
-
-### Recommendation
-- Short-term: ServiceNow GenAI for quick wins (ticket routing, FAQ)
-- Mid-term: Azure OpenAI for advanced use cases (predictive, generative)
-- Architecture: API gateway pattern to allow future provider switching
-
-### Decision & Next Steps
-- Present options to steering committee
-- Run 4-week proof of concept with top 2 options
-- Final decision by end of Q3 2026`,
-    },
-    {
-      label: 'People Mgmt Meeting',
-      kind: 'meeting',
-      description: 'Committee meeting template',
-      content: `# People Management Meeting
-## People & Enterprise Tech | Committee Topic
-
-### Cover Page
-- Committee: [Committee Name]
-- Topic: [Topic Title]
-- Responsible: [Owner Name]
-- Speaker: [Presenter Name]
-- AI Solution Used: M365 Copilot Chat / M365 Copilot Agent / Company-provided AI Solution
-
-### Summary
-- Main Messages & Target
-- Which information is essential for understanding the topic?
-- Are there any decisions to be made? What is the intended outcome?
-- What are the key points that should be discussed?
-- Where is guidance needed?
-
-### Decisions / Acknowledgements
-- The People Management Team took note of ...
-- The People Management Team acknowledged ...
-- The People Management Team approved ...
-- The People Management Team decided ...
-
-### Next Steps & Tasks
-- Task 1: [Description] | Responsible: [Name/Unit] | Target: [Date]
-- Task 2: [Description] | Responsible: [Name/Unit] | Target: [Date]
-- Task 3: [Description] | Responsible: [Name/Unit] | Target: [Date]
-
-### AI Contribution
-- AI Solution Used: [Specify tool/agent]
-- Purpose: Added value of AI in preparation of this topic
-- Key Learnings: What worked well / What did not work as expected`,
-    },
-    {
-      label: 'Team Workshop',
-      kind: 'workshop',
-      description: 'Facilitated deck with left chapter nav',
-      content: `# Team Workshop
-## People & Enterprise Tech | MB China
-
-### Cover
-- Team Workshop — People & Enterprise Tech
-- Mercedes-Benz China · Digital HR
-
-### Agenda
-- Chapter 01 · Our Foundation
-- Chapter 02 · Becoming AI-Native
-- Chapter 03 · Converge & Decide
-- Wrap-up & Export
-
-### 01 · Our Foundation
-- Where we stand today
-
-### Mid-year Achievements
-- ServiceNow GenAI module pilot live
-- DeckForge executive deck automation
-- HR self-service adoption +35%
-
-### Team Portfolio 2026
-- HR Digital Management
-- ServiceNow Operations
-- Data & Analytics
-- Change Management
-
-### PT Digital & BI Team
-- Platform strategy & AI initiatives
-- Service delivery & automation
-- Workforce insights & reporting
-
-### Digital Governance
-- RACI-based decision framework
-- Documented escalation paths
-- Quarterly innovation showcases
-
-### 02 · Becoming AI-Native
-- From tools to native workflows
-
-### Brainstorm Canvas
-- Use case: [your idea]
-- Owner: [name]
-- AI value: [describe]
-- Risk: [describe]
-
-### 03 · Converge & Decide
-- Prioritize and commit
-
-### Summary & Decisions
-- Acknowledged: ...
-- Approved: ...
-- Decided: ...
-
-### Next Steps & Tasks
-- Task 1: [desc] | Owner: [name] | Due: [date]
-- Task 2: [desc] | Owner: [name] | Due: [date]
-
-### AI Contribution
-- AI Solution Used: [tool/agent]
-- Purpose: added value in preparation
-- Key Learnings: what worked / what didn't
-
-### Close
-- Driving today, shaping tomorrow`,
-    },
-    {
-      label: 'AI Use Case Timeline',
-      description: 'Gallery + swimlane timeline + status details',
-      content: 'AI Use Case Timeline — gallery, swimlane timeline, and per-use-case status details.',
-      kind: 'usecase-timeline',
-      slides: 6,
-    },
-  ]
+  // Template entry points now live in the Template Marketplace (see
+  // MarketplacePage / registry); the content-only outlines that used to power
+  // the special meeting/workshop generators moved to AiPanel quick templates.
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -337,27 +159,6 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
     setChatInput('')
   }
 
-  const handleTemplateSelect = (tmpl: typeof templates[number]) => {
-    setContent(tmpl.content)
-    setGenerating(true)
-    setTimeout(() => {
-      const kind = tmpl.kind || 'standard'
-      const deck = kind === 'meeting'
-        ? generateMeetingDeck(tmpl.content.trim())
-        : kind === 'workshop'
-          ? generateWorkshopDeck()
-          : kind === 'usecase-timeline'
-            ? generateUseCaseTimelineDeck()
-            : kind === 'pet-template'
-              ? generatePetTemplateDeck()
-              : generateDeckFromContent(tmpl.content.trim())
-      addDeck(deck)
-      setActiveDeck(deck.id)
-      setGenerating(false)
-      onGenerated()
-    }, 600)
-  }
-
   const triStarSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M40 30 L42 38.5 L48 42 L40 40 L32 42 L38 38.5 Z" fill="rgba(255,255,255,0.12)"/></svg>`)}`
 
   return (
@@ -388,40 +189,25 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
           <p className="text-sm text-white/50 mt-1">Create stunning presentations in seconds</p>
         </div>
 
-        {/* Mode toggle cards — hidden during conversation */}
+        {/* Entry cards — hidden during conversation */}
         {aiPhase === 'input' && (
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <button
-              onClick={() => setMode('ai')}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl border transition-all text-left ${
-                mode === 'ai'
-                  ? 'border-[#FF9102] bg-[#FF9102]/10 shadow-lg shadow-orange-900/10'
-                  : 'border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/10'
-              }`}
-            >
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                mode === 'ai' ? 'bg-gradient-to-br from-[#FF7500] to-[#FF9102]' : 'bg-white/10'
-              }`}>
+            <div className="flex items-center gap-3 px-5 py-4 rounded-xl border border-[#FF9102] bg-[#FF9102]/10 shadow-lg shadow-orange-900/10 text-left">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#FF7500] to-[#FF9102]">
                 <Sparkles size={18} className="text-white" />
               </div>
-              <span className={`text-sm font-medium ${mode === 'ai' ? 'text-white' : 'text-white/70'}`}>
+              <span className="text-sm font-medium text-white">
                 Generate with AI
               </span>
-            </button>
+            </div>
             <button
-              onClick={() => setMode('template')}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl border transition-all text-left ${
-                mode === 'template'
-                  ? 'border-[#FF9102] bg-[#FF9102]/10 shadow-lg shadow-orange-900/10'
-                  : 'border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/10'
-              }`}
+              onClick={onOpenMarketplace}
+              className="group flex items-center gap-3 px-5 py-4 rounded-xl border border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/10 transition-all text-left"
             >
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                mode === 'template' ? 'bg-gradient-to-br from-[#FF7500] to-[#FF9102]' : 'bg-white/10'
-              }`}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 group-hover:bg-gradient-to-br group-hover:from-[#FF7500] group-hover:to-[#FF9102] transition-all">
                 <LayoutGrid size={18} className="text-white" />
               </div>
-              <span className={`text-sm font-medium ${mode === 'template' ? 'text-white' : 'text-white/70'}`}>
+              <span className="text-sm font-medium text-white/70 group-hover:text-white transition-colors">
                 Start from a Template
               </span>
             </button>
@@ -430,7 +216,7 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
 
         {/* Content area */}
         <div className="relative border border-white/15 rounded-2xl bg-white/5 backdrop-blur-xl transition-colors overflow-hidden">
-          {mode === 'ai' && aiPhase === 'input' && (
+          {aiPhase === 'input' && (
             <div className="p-6">
               <textarea
                 value={content}
@@ -488,7 +274,7 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
                 </div>
                 <button
                   onClick={handleStartConversation}
-                  disabled={!content.trim() || generating}
+                  disabled={!content.trim()}
                   className="px-6 py-2.5 bg-gradient-to-r from-[#FF7500] to-[#FF9102] hover:from-[#FF8500] hover:to-[#FFA020] disabled:from-white/10 disabled:to-white/10 disabled:text-white/30 disabled:cursor-not-allowed text-white text-sm font-medium rounded-full transition-all flex items-center gap-2 shadow-lg shadow-orange-900/20"
                 >
                   <Sparkles size={16} />
@@ -498,7 +284,7 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
             </div>
           )}
 
-          {mode === 'ai' && (aiPhase === 'conversation' || aiPhase === 'generating') && (
+          {(aiPhase === 'conversation' || aiPhase === 'generating') && (
             <div className="flex flex-col h-[400px]">
               {/* Chat header */}
               <div className="flex items-center gap-3 px-5 py-3 border-b border-white/10">
@@ -573,54 +359,6 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
             </div>
           )}
 
-          {mode === 'template' && (
-            <div
-              className="p-6 grid grid-cols-2 gap-4 max-h-[55vh] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/15 [&::-webkit-scrollbar-track]:bg-transparent"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.2) transparent' }}
-            >
-              {templates.map((tmpl) => {
-                const slideCount = tmpl.slides
-                  ?? ((tmpl.content.match(/^###\s/gm) || []).length || Math.ceil(tmpl.content.split('\n').filter(l => l.trim()).length / 6))
-                const featured = tmpl.featured
-                return (
-                  <button
-                    key={tmpl.label}
-                    onClick={() => handleTemplateSelect(tmpl)}
-                    disabled={generating}
-                    className={`relative px-5 py-5 text-left rounded-xl transition-all group disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden ${featured
-                      ? 'col-span-2 border border-[#FF9102]/40 bg-gradient-to-br from-[#FF9102]/15 via-[#FF7500]/8 to-white/[0.02] hover:border-[#FF9102]/70 hover:from-[#FF9102]/20 hover:to-[#FF9102]/5'
-                      : 'border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-[#FF9102]/50 hover:from-[#FF9102]/10 hover:to-[#FF9102]/5'
-                    }`}
-                  >
-                    {featured && (
-                      <div className="absolute inset-0 pointer-events-none rounded-xl" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,145,2,0.25), inset 0 1px 0 rgba(255,199,103,0.18)' }} />
-                    )}
-                    <div className="absolute top-3 right-3 w-8 h-5 rounded bg-white/10 flex items-center justify-center">
-                      <span className="text-[9px] text-white/50 font-medium">{slideCount}s</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${featured
-                        ? 'bg-gradient-to-br from-[#FF7500] to-[#FF9102] group-hover:from-[#FF8500] group-hover:to-[#FFA020]'
-                        : 'bg-gradient-to-br from-[#FF7500]/20 to-[#FF9102]/10 group-hover:from-[#FF7500]/30 group-hover:to-[#FF9102]/20'}`}>
-                        <LayoutGrid size={14} className={featured ? 'text-white' : 'text-[#FF9102]'} />
-                      </div>
-                      {featured && (
-                        <span className="px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase text-[#0a0a0a] bg-gradient-to-r from-[#FFC767] to-[#FF9102]">PET Signature</span>
-                      )}
-                    </div>
-                    <span className="text-sm font-medium text-white/90 group-hover:text-white block">{tmpl.label}</span>
-                    <span className="block text-xs text-white/40 mt-1 group-hover:text-white/60">{tmpl.description}</span>
-                    <div className="mt-3 flex gap-1">
-                      {Array.from({ length: Math.min(slideCount, 6) }).map((_, i) => (
-                        <div key={i} className="w-5 h-3 rounded-sm bg-white/10 group-hover:bg-[#FF9102]/20 transition-colors" />
-                      ))}
-                      {slideCount > 6 && <span className="text-[8px] text-white/30 self-center ml-0.5">+{slideCount - 6}</span>}
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          )}
         </div>
 
         {/* Recent decks */}
@@ -785,139 +523,6 @@ function sectionToSlide(section: Section, theme: SlideTheme = 'dark'): Slide {
     theme,
     layout,
     components,
-  }
-}
-
-function generateMeetingDeck(text: string): Deck {
-  const lines = text.split('\n').filter((l) => l.trim())
-  const subtitle = lines.find(l => l.startsWith('##'))?.replace(/^##\s*/, '') || 'People & Enterprise Tech'
-
-  const sections: Record<string, string[]> = {}
-  let currentSection = ''
-  for (const line of lines) {
-    const trimmed = line.trim()
-    if (trimmed.startsWith('###')) {
-      currentSection = trimmed.replace(/^###\s*/, '')
-      sections[currentSection] = []
-    } else if (currentSection && trimmed.startsWith('-')) {
-      sections[currentSection].push(trimmed.replace(/^-\s*/, ''))
-    }
-  }
-
-  const slides: Slide[] = []
-
-  // Slide 1: Cover
-  slides.push({
-    id: uuid(),
-    theme: 'light',
-    layout: 'meeting',
-    components: [
-      { id: uuid(), type: 'heading', props: { level: 1, text: 'People Management Meeting', html: '' } },
-      { id: uuid(), type: 'text', props: { text: subtitle, html: '', className: '' } },
-      { id: uuid(), type: 'list', props: { items: sections['Cover Page'] || ['[Committee]', '[Topic]', '[Responsible]', '[Speaker]'], className: '' } },
-    ],
-  })
-
-  // Slide 2: Summary
-  slides.push({
-    id: uuid(),
-    theme: 'light',
-    layout: 'meeting-summary',
-    components: [
-      { id: uuid(), type: 'heading', props: { level: 2, text: 'Main Messages & Target', html: '' } },
-      { id: uuid(), type: 'list', props: { items: sections['Summary'] || ['Which information is essential?', 'Decisions to be made?', 'Key discussion points?', 'Where is guidance needed?'], className: '' } },
-    ],
-  })
-
-  // Slide 3: Decisions + Next Steps
-  slides.push({
-    id: uuid(),
-    theme: 'light',
-    layout: 'meeting-decisions',
-    components: [
-      { id: uuid(), type: 'list', props: { items: sections['Decisions / Acknowledgements'] || ['The People Management Team took note of ...', 'The People Management Team acknowledged ...', 'The People Management Team approved ...', 'The People Management Team decided ...'], className: '' } },
-    ],
-  })
-
-  // Slide 4: Next Steps & Tasks
-  slides.push({
-    id: uuid(),
-    theme: 'light',
-    layout: 'meeting-nextsteps',
-    components: [
-      { id: uuid(), type: 'list', props: { items: sections['Next Steps & Tasks'] || ['Task 1: [Description] | Responsible: [Name] | Target: [Date]', 'Task 2: [Description] | Responsible: [Name] | Target: [Date]', 'Task 3: [Description] | Responsible: [Name] | Target: [Date]'], className: '' } },
-    ],
-  })
-
-  // Slide 5: AI Contribution
-  slides.push({
-    id: uuid(),
-    theme: 'light',
-    layout: 'meeting-ai',
-    components: [
-      { id: uuid(), type: 'list', props: { items: sections['AI Contribution'] || ['AI Solution Used: [Specify tool/agent]', 'Purpose: Added value of AI in preparation', 'Key Learnings: What worked well / What did not'], className: '' } },
-    ],
-  })
-
-  return {
-    id: uuid(),
-    meta: { title: 'People Management Meeting', brand: 'mercedes', tags: ['meeting'] },
-    slides,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-}
-
-interface WorkshopSlidePlan {
-  chapter: string
-  layout: SlideLayoutType
-  theme?: 'dark' | 'light'
-  heading?: string
-  subtitle?: string
-  items?: string[]
-}
-
-/**
- * Builds the "Team Workshop" deck, preserving the team-workshop.html design:
- * a persistent left chapter-navigator frame + star background + editable slides.
- * Slides carry a `chapter` label that the editor and exporter use to build the nav.
- */
-function generateWorkshopDeck(): Deck {
-  const plan: WorkshopSlidePlan[] = [
-    { chapter: 'Welcome', layout: 'title', heading: 'Team Workshop', subtitle: 'People & Enterprise Tech | MB China' },
-    { chapter: 'Welcome', layout: 'content', heading: 'Agenda & Timeboxing', items: ['Chapter 01 · Our Foundation', 'Chapter 02 · Becoming AI-Native', 'Chapter 03 · Converge & Decide', 'Wrap-up & Export'] },
-    { chapter: '01 · Our Foundation', layout: 'chapter', heading: 'Our Foundation' },
-    { chapter: '01 · Our Foundation', layout: 'content', heading: 'Mid-year Achievements', items: ['ServiceNow GenAI module pilot live', 'DeckForge executive deck automation', 'HR self-service adoption +35%'] },
-    { chapter: '01 · Our Foundation', layout: 'content', heading: 'Team Portfolio 2026', items: ['HR Digital Management', 'ServiceNow Operations', 'Data & Analytics', 'Change Management'] },
-    { chapter: '01 · Our Foundation', layout: 'content', heading: 'PT Digital & BI Team', items: ['Platform strategy & AI initiatives', 'Service delivery & automation', 'Workforce insights & reporting'] },
-    { chapter: '01 · Our Foundation', layout: 'content', heading: 'Digital Governance', items: ['RACI-based decision framework', 'Documented escalation paths', 'Quarterly innovation showcases'] },
-    { chapter: '02 · Becoming AI-Native', layout: 'chapter', heading: 'Becoming AI-Native' },
-    { chapter: '02 · Becoming AI-Native', layout: 'content', heading: 'Brainstorm Canvas', items: ['Use case: [your idea]', 'Owner: [name]', 'AI value: [describe]', 'Risk: [describe]'] },
-    { chapter: '03 · Converge & Decide', layout: 'chapter', heading: 'Converge & Decide' },
-    { chapter: '03 · Converge & Decide', layout: 'content', heading: 'Summary & Decisions', items: ['Acknowledged: ...', 'Approved: ...', 'Decided: ...'] },
-    { chapter: '03 · Converge & Decide', layout: 'content', heading: 'Next Steps & Tasks', items: ['Task 1: [desc] | Owner: [name] | Due: [date]', 'Task 2: [desc] | Owner: [name] | Due: [date]'] },
-    { chapter: 'Wrap-up', layout: 'content', heading: 'AI Contribution', items: ['AI Solution Used: [tool/agent]', 'Purpose: added value in preparation', "Key Learnings: what worked / what didn't"] },
-    { chapter: 'Wrap-up', layout: 'statement', heading: 'Driving today, shaping tomorrow' },
-  ]
-
-  const slides: Slide[] = plan.map((w) => {
-    const components: SlideComponent[] = []
-    if (w.heading) {
-      const isLarge = w.layout === 'title' || w.layout === 'statement'
-      components.push({ id: uuid(), type: 'heading', props: { level: isLarge ? 1 : 2, text: w.heading, html: '' } })
-    }
-    if (w.subtitle) components.push({ id: uuid(), type: 'text', props: { text: w.subtitle, html: '', className: 'subtitle' } })
-    if (w.items) components.push({ id: uuid(), type: 'list', props: { items: w.items, className: '' } })
-    return { id: uuid(), theme: w.theme || 'dark', layout: w.layout, chapter: w.chapter, components }
-  })
-
-  return {
-    id: uuid(),
-    meta: { title: 'Team Workshop', brand: 'mercedes', tags: ['workshop'] },
-    slides,
-    frame: { type: 'chapter-nav', sidebarWidth: 240, footText: 'MB PET · Workshop' },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   }
 }
 

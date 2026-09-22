@@ -1,22 +1,39 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useDeckStore } from '@/store/deck-store'
 import { LandingPage } from '@/components/LandingPage'
+import { MarketplacePage } from '@/components/MarketplacePage'
 import { Sidebar } from '@/components/Sidebar'
 import { SlidePanel } from '@/components/SlidePanel'
 import { SlideEditor } from '@/components/SlideEditor'
 import { ExportPanel } from '@/components/ExportPanel'
 import { AiPanel } from '@/components/AiPanel'
-import { ToastContainer } from '@/components/Toast'
+import { ToastContainer, showToast } from '@/components/Toast'
 import { exportDeckToHtml } from '@/lib/html-exporter'
+import { useTemplate } from '@/lib/templates/registry'
 
 export default function App() {
-  const [view, setView] = useState<'landing' | 'editor'>('landing')
+  const [view, setView] = useState<'landing' | 'marketplace' | 'editor'>('landing')
   const [showShortcuts, setShowShortcuts] = useState(false)
-  const { sidebarView, decks, activeDeckId, activeSlideIndex, setActiveSlide, isPresenting, setPresenting, undo, redo } = useDeckStore()
+  const { sidebarView, decks, activeDeckId, activeSlideIndex, setActiveSlide, isPresenting, setPresenting, undo, redo, addDeck } = useDeckStore()
 
   const deck = decks.find(d => d.id === activeDeckId)
 
+  const handleUseTemplate = useCallback(async (id: string): Promise<boolean> => {
+    try {
+      const imported = await useTemplate(id)
+      addDeck(imported)
+      setView('editor')
+      showToast('success', `模板已导入：${imported.meta.title}（${imported.slides.length} 页）`)
+      return true
+    } catch (err) {
+      console.error('Template import failed:', err)
+      showToast('error', '模板导入失败，请重试')
+      return false
+    }
+  }, [addDeck])
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (view !== 'editor') return
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
 
     if (isPresenting) {
@@ -32,7 +49,7 @@ export default function App() {
     if (e.key === 'z' && e.ctrlKey && !e.shiftKey) { e.preventDefault(); undo() }
     if ((e.key === 'z' && e.ctrlKey && e.shiftKey) || (e.key === 'y' && e.ctrlKey)) { e.preventDefault(); redo() }
     if (e.key === '?') { setShowShortcuts(s => !s) }
-  }, [activeSlideIndex, deck, isPresenting, setActiveSlide, setPresenting, undo, redo])
+  }, [view, activeSlideIndex, deck, isPresenting, setActiveSlide, setPresenting, undo, redo])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -51,7 +68,11 @@ export default function App() {
   }
 
   if (view === 'landing') {
-    return <><LandingPage onGenerated={() => setView('editor')} /><ToastContainer /></>
+    return <><LandingPage onGenerated={() => setView('editor')} onOpenMarketplace={() => setView('marketplace')} /><ToastContainer /></>
+  }
+
+  if (view === 'marketplace') {
+    return <><MarketplacePage onBack={() => setView('landing')} onUseTemplate={handleUseTemplate} /><ToastContainer /></>
   }
 
   if (isPresenting && deck) {

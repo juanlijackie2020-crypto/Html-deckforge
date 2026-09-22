@@ -116,6 +116,155 @@ export function AiPanel() {
     { label: 'Project Update', text: '# Project Status Update\n\n## Progress\n- Completed milestone 1\n- On track for Q3 delivery\n- Team expanded to 8 members\n\n## Next Steps\n- Finalize design specs\n- Begin user testing\n- Prepare stakeholder review' },
     { label: 'AI Use Case Pitch', text: '# AI Use Case Pitch\nProduct Name Here\n\n## Business Problem\n- Current process is manual and error-prone\n- High compliance risk\n- Slow turnaround time\n\n## AI Solution\n- Automated data processing\n- Real-time validation\n- Intelligent workflow routing\n\n## Business Value\n- 40% efficiency gain\n- Reduced error rate\n- Improved compliance posture' },
     { label: 'Team Introduction', text: '# Meet the Team\nPeople & Enterprise Tech\n\n## Our Expertise\n- AI & Digital Transformation\n- Enterprise Platform Management\n- Data Analytics & Insights\n- Change Management' },
+    {
+      label: 'Decision Analysis',
+      text: `# Decision Analysis
+
+## AI Platform Selection for HR Automation
+
+### Decision Context
+- Need to select AI platform for HR service automation
+- Must integrate with existing ServiceNow infrastructure
+- Budget approved for FY2026-2027 implementation
+
+### Options Under Evaluation
+- Option A: ServiceNow GenAI (native integration)
+- Option B: Azure OpenAI + custom orchestration
+- Option C: Hybrid approach (ServiceNow + external LLM)
+
+### Evaluation Criteria
+- Integration complexity with current stack
+- Total cost of ownership (3-year horizon)
+- Data residency and privacy compliance (China regulations)
+- Scalability and multi-language support (EN/CN/DE)
+- Vendor lock-in risk
+
+### Comparative Assessment
+- ServiceNow GenAI: Low integration effort, higher per-transaction cost, limited CN language quality
+- Azure OpenAI: Moderate integration, flexible pricing, strong multilingual, requires custom build
+- Hybrid: Best of both, highest initial complexity, most future-proof
+
+### Risk Analysis
+- Data sovereignty: China PIPL compliance mandatory
+- Vendor dependency: Single-vendor risk vs. multi-vendor complexity
+- Timeline: Native solutions faster to deploy, custom solutions more adaptable
+- Skills gap: Team readiness for custom AI development
+
+### Recommendation
+- Short-term: ServiceNow GenAI for quick wins (ticket routing, FAQ)
+- Mid-term: Azure OpenAI for advanced use cases (predictive, generative)
+- Architecture: API gateway pattern to allow future provider switching
+
+### Decision & Next Steps
+- Present options to steering committee
+- Run 4-week proof of concept with top 2 options
+- Final decision by end of Q3 2026`,
+    },
+    {
+      label: 'People Mgmt Meeting',
+      text: `# People Mgmt Meeting
+
+## People & Enterprise Tech | Committee Topic
+
+### Cover Page
+- Committee: [Committee Name]
+- Topic: [Topic Title]
+- Responsible: [Owner Name]
+- Speaker: [Presenter Name]
+- AI Solution Used: M365 Copilot Chat / M365 Copilot Agent / Company-provided AI Solution
+
+### Summary
+- Main Messages & Target
+- Which information is essential for understanding the topic?
+- Are there any decisions to be made? What is the intended outcome?
+- What are the key points that should be discussed?
+- Where is guidance needed?
+
+### Decisions / Acknowledgements
+- The People Management Team took note of ...
+- acknowledged ...
+- approved ...
+- decided ...
+
+### Next Steps & Tasks
+- Task 1: [Description] | Responsible: [Name/Unit] | Target: [Date]
+- Task 2
+- Task 3
+
+### AI Contribution
+- AI Solution Used: [Specify tool/agent]
+- Purpose: Added value of AI in preparation of this topic
+- Key Learnings: What worked well / What did not work as expected`,
+    },
+    {
+      label: 'Team Workshop',
+      text: `# Team Workshop
+
+## People & Enterprise Tech | MB China
+
+### Cover
+- Team Workshop — People & Enterprise Tech
+- Mercedes-Benz China · Digital HR
+
+### Agenda
+- Chapter 01 · Our Foundation
+- Chapter 02 · Becoming AI-Native
+- Chapter 03 · Converge & Decide
+- Wrap-up & Export
+
+### 01 · Our Foundation
+- Where we stand today
+
+### Mid-year Achievements
+- ServiceNow GenAI module pilot live
+- DeckForge executive deck automation
+- HR self-service adoption +35%
+
+### Team Portfolio 2026
+- HR Digital Management
+- ServiceNow Operations
+- Data & Analytics
+- Change Management
+
+### PT Digital & BI Team
+- Platform strategy & AI initiatives
+- Service delivery & automation
+- Workforce insights & reporting
+
+### Digital Governance
+- RACI-based decision framework
+- Documented escalation paths
+- Quarterly innovation showcases
+
+### 02 · Becoming AI-Native
+- From tools to native workflows
+
+### Brainstorm Canvas
+- Use case: [your idea]
+- Owner: [name]
+- AI value: [describe]
+- Risk: [describe]
+
+### 03 · Converge & Decide
+- Prioritize and commit
+
+### Summary & Decisions
+- Acknowledged: ...
+- Approved: ...
+- Decided: ...
+
+### Next Steps & Tasks
+- Task 1: [desc] | Owner: [name] | Due: [date]
+- Task 2
+
+### AI Contribution
+- AI Solution Used: [tool/agent]
+- Purpose: added value in preparation
+- Key Learnings: what worked / what didn't
+
+### Close
+- Driving today, shaping tomorrow`,
+    },
   ]
 
   return (
