@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import type { Plugin } from 'vite'
 import https from 'https'
+import { readdir, readFile, stat } from 'fs/promises'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 
 interface LlmProxyOptions {
@@ -100,6 +101,88 @@ function llmProxyPlugin(opts: LlmProxyOptions): Plugin {
 
 const useElectron = process.env.ELECTRON === '1'
 
+/**
+ * Dev-server source for the template marketplace: serves .html files from a
+ * local folder (MARKETPLACE_DIR, default <project>/marketplace-templates).
+ * Dev-only by nature — configureServer never runs in a production build, so
+ * the packaged app simply reports the folder source as unavailable.
+ */
+function templatesPlugin(marketplaceDir: string): Plugin {
+  return {
+    name: 'templates-marketplace',
+    configureServer(server) {
+      const root = path.resolve(marketplaceDir)
+
+      server.middlewares.use('/api/templates', async (req, res) => {
+        try {
+          const url = (req.url || '/').split('?')[0]
+          if (url === '/' || url === '') {
+            await serveList(res)
+          } else {
+            await serveFile(url, res)
+          }
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ error: String(err) }))
+        }
+      })
+
+      async function serveList(res: import('http').ServerResponse) {
+        let entries: Awaited<ReturnType<typeof readdir>>
+        try {
+          entries = await readdir(root, { withFileTypes: true })
+        } catch {
+          // A missing folder is not an error — the marketplace invites the
+          // user to create it instead of showing an error banner.
+          res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
+          res.end('[]')
+          return
+        }
+        const files: { file: string; mtime: number }[] = []
+        for (const entry of entries) {
+          if (!entry.isFile() || !/\.html?$/i.test(entry.name)) continue
+          const s = await stat(path.join(root, entry.name))
+          files.push({ file: entry.name, mtime: s.mtimeMs })
+        }
+        files.sort((a, b) => a.file.localeCompare(b.file))
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
+        res.end(JSON.stringify(files))
+      }
+
+      async function serveFile(url: string, res: import('http').ServerResponse) {
+        let name: string
+        try {
+          name = decodeURIComponent(url.replace(/^\//, ''))
+        } catch {
+          res.writeHead(400, { 'Content-Type': 'text/plain' })
+          res.end('bad request')
+          return
+        }
+        // Path-traversal guard: only bare file names inside the folder.
+        if (!name || /[\\/]/.test(name) || name.includes('..')) {
+          res.writeHead(403, { 'Content-Type': 'text/plain' })
+          res.end('forbidden')
+          return
+        }
+        const filePath = path.resolve(root, name)
+        if (!filePath.startsWith(root + path.sep)) {
+          res.writeHead(403, { 'Content-Type': 'text/plain' })
+          res.end('forbidden')
+          return
+        }
+        try {
+          const html = await readFile(filePath, 'utf-8')
+          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' })
+          res.end(html)
+        } catch {
+          res.writeHead(404, { 'Content-Type': 'text/plain' })
+          res.end('not found')
+        }
+      }
+    },
+  }
+}
+
 export default defineConfig(async ({ mode }) => {
   // LLM gateway config lives in .env / .env.local (see .env.example) — the API
   // key must never be hardcoded. Empty prefix so LLM_* vars are loaded too.
@@ -117,6 +200,7 @@ export default defineConfig(async ({ mode }) => {
   const plugins = [
     react(),
     llmProxyPlugin({ baseUrl: llmBaseUrl, apiKey: llmApiKey, proxyAgent }),
+    templatesPlugin(path.resolve(env.MARKETPLACE_DIR || path.join(__dirname, 'marketplace-templates'))),
   ]
 
   if (useElectron) {
