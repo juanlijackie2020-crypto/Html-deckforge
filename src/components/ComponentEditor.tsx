@@ -544,6 +544,57 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                   </div>
                 </div>
               )}
+              {comp.type === 'raw' && (
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-[10px] text-mb-gray block mb-0.5">HTML</label>
+                    <textarea
+                      value={comp.props.html as string}
+                      onChange={(e) => updateComponent(slideIndex, comp.id, { html: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-[11px] text-white resize-none h-36 font-mono leading-relaxed"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <details className="rounded border border-white/10 bg-white/[0.02]">
+                    <summary className="px-2 py-1 text-[10px] text-mb-gray cursor-pointer select-none hover:text-white">
+                      CSS (click to expand)
+                    </summary>
+                    <textarea
+                      value={comp.props.css as string}
+                      onChange={(e) => updateComponent(slideIndex, comp.id, { css: e.target.value })}
+                      className="w-full bg-white/5 border-t border-white/10 rounded-b px-2 py-1 text-[11px] text-white resize-none h-36 font-mono leading-relaxed"
+                      spellCheck={false}
+                    />
+                  </details>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] text-mb-gray block mb-0.5">Theme</label>
+                      <select
+                        value={(comp.props.theme as string) || 'dark'}
+                        onChange={(e) => updateComponent(slideIndex, comp.id, { theme: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      >
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-mb-gray block mb-0.5">Fit</label>
+                      <select
+                        value={(comp.props.fit as string) || 'fit'}
+                        onChange={(e) => updateComponent(slideIndex, comp.id, { fit: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      >
+                        <option value="fit">Scale to slide</option>
+                        <option value="scroll">Scroll (tall content)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <p className="text-[9px] text-mb-gray/50 leading-relaxed">
+                    Raw HTML slides keep the original design — edits apply live in the preview.
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>
