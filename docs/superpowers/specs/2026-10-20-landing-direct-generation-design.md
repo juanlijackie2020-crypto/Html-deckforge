@@ -72,8 +72,8 @@ export interface GenerationOptions {
 }
 
 /** 占位 deck：单张标题页，跳转瞬间创建，回填前用户看到的即此页。 */
-export function createPlaceholderDeck(prompt: string, opts: GenerationOptions): Deck
-// 形状：meta.title = 提示词截断 60 字；meta.brand='mercedes'；meta.tags=['ai-generated']
+export function createPlaceholderDeck(opts: GenerationOptions): Deck
+// 形状：meta.title = opts.prompt 压成单行并截断 60 字；meta.brand='mercedes'；meta.tags=['ai-generated']
 //       slides = [ { layout:'title', theme: opts.theme,
 //                    components: [ heading(提示词摘要), text('DeckForge AI 正在生成…') ] } ]
 //       id=uuid、createdAt/updatedAt=now（字段以 src/types/deck.ts 为准）
@@ -150,7 +150,8 @@ generation: GenerationState | null   // 初始 null
 | 生成期间手动编辑占位页 | 允许；回填时整体替换，此期间编辑丢失（v1 接受——横幅在场时页面本就是占位性质） |
 | 生成期间切走（回落地页/市场/看别的 deck） | generation 按 deckId 匹配；回到该 deck 横幅仍在；失败 toast 全局可见 |
 | 竖版 / Newsletter | 占位同样单页；回填为现有 raw-html 单页结果，逻辑不变 |
-| 占位 deck 被删除 | app 无 deleteDeck action，该分支不存在 |
+| 占位 deck 被删除（`removeDeck` 存在，deck-store） | 回填/失败处理前检查 deck 是否仍在；不在则静默清空 generation（重试入口同理，deck 已删时清除状态） |
+| 生成中刷新页面 | 异步任务被杀死——`generation` 随 persist 持久化，rehydrate 时把 `'generating'` 僵尸状态转为可重试的 `'error'`（message「页面刷新导致生成中断」） |
 | 生成完成后 undo | 历史快照支持回退到占位态 |
 
 ## 7. 测试计划

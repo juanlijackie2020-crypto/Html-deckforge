@@ -6,11 +6,11 @@ import { SlidePreview } from './SlidePreview'
 import type { SlideEditHandler } from './SlidePreview'
 import { ComponentEditor } from './ComponentEditor'
 import { BrandKitPanel } from './BrandKitPanel'
-import { ChevronLeft, ChevronRight, Maximize, Undo2, Redo2, StickyNote, ChevronDown, ZoomIn, ZoomOut, Wand2, LayoutGrid } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Maximize, Undo2, Redo2, StickyNote, ChevronDown, ZoomIn, ZoomOut, Wand2, LayoutGrid, Loader2, AlertCircle } from 'lucide-react'
 import { callLLM } from '@/lib/llm'
 
 export function SlideEditor() {
-  const { decks, activeDeckId, activeSlideIndex, setActiveSlide, moveSlide, setPresenting, updateComponent, updateSlide, updateDeckMeta, addComponent, undo, redo, history, historyIndex } = useDeckStore()
+  const { decks, activeDeckId, activeSlideIndex, setActiveSlide, moveSlide, setPresenting, updateComponent, updateSlide, updateDeckMeta, addComponent, undo, redo, history, historyIndex, generation, retryGeneration, dismissGeneration } = useDeckStore()
   const deck = decks.find((d) => d.id === activeDeckId)
   const slide = deck?.slides[activeSlideIndex]
   const [filmDragIdx, setFilmDragIdx] = useState<number | null>(null)
@@ -171,6 +171,45 @@ export function SlideEditor() {
           title="Click to rename deck"
         />
       </div>
+
+      {/* Background generation banner — shown while this deck is being generated */}
+      {generation && generation.deckId === activeDeckId && (
+        <div
+          className={`h-8 shrink-0 flex items-center gap-2 px-4 text-[11px] border-b ${
+            generation.status === 'generating'
+              ? 'border-[#FF9102]/20 bg-[#FF9102]/10 text-[#FFC767]'
+              : 'border-red-500/20 bg-red-500/10 text-red-300'
+          }`}
+        >
+          {generation.status === 'generating' ? (
+            <>
+              <Loader2 size={12} className="animate-spin" />
+              <span>正在生成幻灯片…（约 30–90 秒，完成后自动填充）</span>
+            </>
+          ) : (
+            <>
+              <AlertCircle size={12} className="shrink-0" />
+              <span className="truncate" title={generation.message}>
+                生成失败：{generation.message || '未知错误'}
+              </span>
+              <div className="ml-auto flex items-center gap-2 shrink-0">
+                <button
+                  onClick={retryGeneration}
+                  className="px-2.5 py-1 rounded border border-red-400/30 text-red-300/90 hover:bg-red-500/20 transition-colors"
+                >
+                  重试
+                </button>
+                <button
+                  onClick={dismissGeneration}
+                  className="px-2.5 py-1 rounded bg-gradient-to-r from-[#FF7500] to-[#FF9102] text-white font-medium hover:from-[#FF8500] hover:to-[#FFA020] transition-all"
+                >
+                  跳过，直接编辑
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Slide sorter view */}
       {sorterView && (
