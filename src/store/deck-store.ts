@@ -2,8 +2,24 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuid } from 'uuid'
 import type { Deck, Slide, SlideComponent, BrandKit } from '@/types/deck'
+import {
+  createPlaceholderDeck,
+  runDeckGeneration,
+  type GenerationOptions,
+} from '@/lib/deck-generator'
+import { showToast } from '@/components/Toast'
 
 const MAX_HISTORY = 50
+
+/** Tracks the one background generation run the app allows at a time. */
+export interface GenerationState {
+  deckId: string
+  status: 'generating' | 'error'
+  /** Error summary shown in the banner when status is 'error'. */
+  message?: string
+  /** Full input, kept so a retry needs nothing from the UI. */
+  opts: GenerationOptions
+}
 
 interface DeckState {
   decks: Deck[]
@@ -11,6 +27,7 @@ interface DeckState {
   activeSlideIndex: number
   sidebarView: 'slides' | 'ai' | 'export'
   isPresenting: boolean
+  generation: GenerationState | null
 
   // Undo/Redo
   history: string[]
@@ -43,6 +60,12 @@ interface DeckState {
   updateDeckMeta: (meta: Partial<import('@/types/deck').DeckMeta>) => void
   updateDeckBrandKit: (brandKit: BrandKit) => void
 
+  // Generation lifecycle (landing → editor background fill)
+  startGeneration: (opts: GenerationOptions) => boolean
+  retryGeneration: () => void
+  dismissGeneration: () => void
+  replaceDeckSlides: (deckId: string, slides: Slide[], metaPatch?: Partial<import('@/types/deck').DeckMeta>) => void
+
   // UI state
   setSidebarView: (view: DeckState['sidebarView']) => void
   setPresenting: (presenting: boolean) => void
@@ -56,6 +79,7 @@ export const useDeckStore = create<DeckState>()(
   activeSlideIndex: 0,
   sidebarView: 'slides',
   isPresenting: false,
+  generation: null,
   history: [],
   historyIndex: -1,
 
@@ -256,6 +280,73 @@ export const useDeckStore = create<DeckState>()(
     })
   },
 
+  startGeneration: (opts) => {
+    const { generation } = get()
+    if (generation?.status === 'generating') return false
+    const deck = createPlaceholderDeck(opts)
+    get().addDeck(deck)
+    get().setActiveDeck(deck.id)
+    set({ generation: { deckId: deck.id, status: 'generating', opts } })
+    void runGeneration(deck.id, opts)
+    return true
+  },
+
+  retryGeneration: () => {
+    const { generation } = get()
+    if (!generation || generation.status !== 'error') return
+    // The placeholder may have been deleted since the run failed.
+    if (!get().decks.some((d) => d.id === generation.deckId)) {
+      set({ generation: null })
+      return
+    }
+    set({ generation: { ...generation, status: 'generating', message: undefined } })
+    void runGeneration(generation.deckId, generation.opts)
+  },
+
+  dismissGeneration: () => {
+    const { generation } = get()
+    if (!generation) return
+    get().pushHistory()
+    // Keep the placeholder as a manual-editing starting point — just swap the
+    // "generating…" subtitle for one that matches its new role.
+    set((state) => ({
+      decks: state.decks.map((d) =>
+        d.id !== generation.deckId
+          ? d
+          : {
+              ...d,
+              slides: d.slides.map((s) => ({
+                ...s,
+                components: s.components.map((c) =>
+                  c.type === 'text' && c.props.className === 'subtitle'
+                    ? { ...c, props: { ...c.props, text: '生成已跳过 — 可直接编辑此页' } }
+                    : c
+                ),
+              })),
+              updatedAt: new Date().toISOString(),
+            }
+      ),
+      generation: null,
+    }))
+  },
+
+  replaceDeckSlides: (deckId, slides, metaPatch) => {
+    get().pushHistory()
+    set((state) => ({
+      decks: state.decks.map((d) =>
+        d.id !== deckId
+          ? d
+          : {
+              ...d,
+              slides,
+              ...(metaPatch ? { meta: { ...d.meta, ...metaPatch } } : {}),
+              updatedAt: new Date().toISOString(),
+            }
+      ),
+      activeSlideIndex: state.activeDeckId === deckId ? 0 : state.activeSlideIndex,
+    }))
+  },
+
   setSidebarView: (view) => set({ sidebarView: view }),
   setPresenting: (presenting) => set({ isPresenting: presenting }),
     }),
@@ -265,7 +356,49 @@ export const useDeckStore = create<DeckState>()(
         decks: state.decks,
         activeDeckId: state.activeDeckId,
         activeSlideIndex: state.activeSlideIndex,
+        generation: state.generation,
       }),
+      // A page refresh kills the in-flight async run — surface it as a
+      // retryable error instead of a banner stuck on "generating" forever.
+      onRehydrateStorage: () => (state) => {
+        if (state?.generation?.status === 'generating') {
+          useDeckStore.setState({
+            generation: { ...state.generation, status: 'error', message: '页面刷新导致生成中断' },
+          })
+        }
+      },
     }
   )
 )
+
+/**
+ * Drives one generation run to completion: backfills the placeholder deck on
+ * success, records the error for the retry/skip banner on failure. Lives at
+ * module scope so it survives the landing page unmounting and always talks to
+ * the live store handle.
+ */
+async function runGeneration(deckId: string, opts: GenerationOptions) {
+  try {
+    const deck = await runDeckGeneration(opts)
+    const store = useDeckStore.getState()
+    // The placeholder may have been deleted while we were generating.
+    if (!store.decks.some((d) => d.id === deckId)) {
+      useDeckStore.setState({ generation: null })
+      return
+    }
+    store.replaceDeckSlides(deckId, deck.slides, { title: deck.meta.title })
+    useDeckStore.setState({ generation: null })
+    showToast('success', `生成完成：${deck.slides.length} 页`)
+  } catch (err) {
+    const store = useDeckStore.getState()
+    if (!store.decks.some((d) => d.id === deckId)) {
+      useDeckStore.setState({ generation: null })
+      return
+    }
+    const message = (err instanceof Error ? err.message : String(err)).slice(0, 200)
+    useDeckStore.setState((s) =>
+      s.generation ? { generation: { ...s.generation, status: 'error', message } } : {}
+    )
+    showToast('error', '生成失败')
+  }
+}
