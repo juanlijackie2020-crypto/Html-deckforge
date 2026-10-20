@@ -14,10 +14,40 @@ interface Props {
 
 type AiPhase = 'input' | 'conversation' | 'generating'
 type SlideType = 'horizontal' | 'vertical' | 'newsletter'
+type Audience = 'executive' | 'team' | 'external' | 'training'
+type OutputLanguage = 'auto' | 'en' | 'zh'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
+}
+
+/** Short human-readable names used in chat-facing prompt text. */
+const AUDIENCE_LABELS: Record<Audience, string> = {
+  executive: 'senior executives',
+  team: 'internal team / peers',
+  external: 'external stakeholders / clients',
+  training: 'training / workshop participants',
+}
+
+/** Generation instructions per audience — tone and depth in one anchor. */
+const AUDIENCE_PROMPTS: Record<Audience, string> = {
+  executive: 'Audience: senior executives. Lead with outcomes and business impact (bottom-line-up-front), keep jargon minimal, prefer crisp assertions over process detail.',
+  team: 'Audience: internal team and peers. Be direct and practical; working-level detail is welcome.',
+  external: 'Audience: external stakeholders or clients. Be polished and benefit-oriented; avoid internal jargon, codenames, and confidential references.',
+  training: 'Audience: training or workshop participants. Be educational and step-by-step; include concrete examples and takeaways.',
+}
+
+const LANGUAGE_LABELS: Record<OutputLanguage, string> = {
+  auto: "same as the user's input",
+  en: 'English',
+  zh: 'Chinese (中文)',
+}
+
+const LANGUAGE_PROMPTS: Record<OutputLanguage, string> = {
+  auto: 'Write in the same language the user used.',
+  en: 'Write ALL slide content in English.',
+  zh: '全部内容用中文撰写（标题、小标题和要点都用中文）。',
 }
 
 export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
@@ -29,6 +59,10 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
   const [isThinking, setIsThinking] = useState(false)
   const [slideType, setSlideType] = useState<SlideType>('horizontal')
   const [deckTheme, setDeckTheme] = useState<SlideTheme>('dark')
+  const [slideCount, setSlideCount] = useState(10)
+  const [audience, setAudience] = useState<Audience>('executive')
+  const [language, setLanguage] = useState<OutputLanguage>('auto')
+  const [includeNotes, setIncludeNotes] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
   const { decks, addDeck, setActiveDeck } = useDeckStore()
@@ -62,14 +96,23 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
     e.target.value = ''
   }
 
+  // The clarification chat must not re-ask what the user already preset below.
+  const formatLine =
+    slideType === 'vertical' ? 'Format: single vertical one-pager (not a slide deck)'
+    : slideType === 'newsletter' ? 'Format: single-page newsletter (not a slide deck)'
+    : `Deck length: ${slideCount} slides`
+
   const CLARIFICATION_SYSTEM = `You are an expert presentation strategist helping the user create a high-impact slide deck. Your job is to ask smart, focused clarification questions to understand exactly what they need BEFORE generating the content.
 
+The user has already configured the following — do NOT ask about these again:
+- Audience: ${AUDIENCE_LABELS[audience]}
+- ${formatLine}
+- Output language: ${LANGUAGE_LABELS[language]}
+
 Ask 2-3 concise clarification questions about:
-- Who is the audience? (executives, peers, external stakeholders)
 - What is the key message or desired outcome? (inform, persuade, get approval)
-- How many slides / how long is the presentation?
 - Any specific data, metrics, or examples to include?
-- Preferred tone? (formal/executive, conversational, technical)
+- Preferred tone or emphasis? (formal, conversational, technical)
 
 Keep your questions brief and conversational. Format them as a numbered list. Do NOT generate the presentation yet — just ask the questions.`
 
@@ -91,7 +134,7 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
       )
       setChatMessages((prev) => [...prev, { role: 'assistant', content: reply }])
     } catch {
-      setChatMessages((prev) => [...prev, { role: 'assistant', content: 'I\'d love to help refine your presentation. A few quick questions:\n\n1. Who is the primary audience for this deck?\n2. What\'s the key outcome you want — inform, persuade, or get a decision?\n3. Roughly how many slides are you targeting?' }])
+      setChatMessages((prev) => [...prev, { role: 'assistant', content: 'I\'d love to help refine your presentation. A few quick questions:\n\n1. What\'s the key outcome you want — inform, persuade, or get a decision?\n2. Any specific data, metrics, or examples to include?\n3. Any tone or emphasis preferences?' }])
     } finally {
       setIsThinking(false)
     }
@@ -132,17 +175,17 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
       const markdown = await callLLM(
         [
           ...messages.map((m) => ({ role: m.role, content: m.content })),
-          { role: 'user', content: 'Based on everything I\'ve told you, generate the complete content in markdown now.' },
+          { role: 'user', content: `Based on everything I've told you, generate the complete content in markdown now. Remember: ${slideType === 'horizontal' ? `exactly ${slideCount} slides${includeNotes ? ' with speaker notes' : ''}` : 'a single page'} — for ${AUDIENCE_LABELS[audience]}.` },
         ],
-        buildGenerationSystem(slideType)
+        buildGenerationSystem(slideType, { slideCount, audience, language, includeNotes })
       )
 
-      const deck = generateDeckFromContent(markdown, { theme: deckTheme, slideType })
+      const deck = generateDeckFromContent(markdown, { theme: deckTheme, slideType, slideCount })
       addDeck(deck)
       setActiveDeck(deck.id)
       onGenerated()
     } catch {
-      const deck = generateDeckFromContent(content.trim(), { theme: deckTheme, slideType })
+      const deck = generateDeckFromContent(content.trim(), { theme: deckTheme, slideType, slideCount })
       addDeck(deck)
       setActiveDeck(deck.id)
       onGenerated()
@@ -224,8 +267,8 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
                 placeholder="Describe your presentation — e.g. A project update on our AI HR transformation initiative covering progress, blockers, and next steps for Q3..."
                 className="w-full h-40 resize-none text-white text-base leading-relaxed placeholder:text-white/35 focus:outline-none bg-transparent"
               />
-              {/* Slide-type + theme selectors (AI input screen only) */}
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              {/* Generation options (AI input screen only) */}
+              <div className={`grid ${slideType === 'horizontal' ? 'grid-cols-3' : 'grid-cols-2'} gap-4 mt-4`}>
                 <div>
                   <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Slide type</span>
                   <div className="flex gap-1.5 flex-wrap">
@@ -256,6 +299,68 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
                     ))}
                   </div>
                 </div>
+                {slideType === 'horizontal' && (
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Slides</span>
+                    <select
+                      value={slideCount}
+                      onChange={(e) => setSlideCount(Number(e.target.value))}
+                      title="Number of slides to generate"
+                      className="w-full bg-white/5 border border-white/15 rounded-full px-3 py-1.5 text-xs text-white focus:border-[#FF9102] focus:outline-none cursor-pointer"
+                    >
+                      {Array.from({ length: 30 }, (_, i) => i + 1).map((n) => (
+                        <option key={n} value={n}>{n}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <div>
+                  <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Audience</span>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {([['executive', 'Executive'], ['team', 'Team'], ['external', 'External'], ['training', 'Training']] as const).map(([v, l]) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setAudience(v)}
+                        className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${audience === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Language</span>
+                  <div className="flex gap-1.5">
+                    {([['auto', 'Auto'], ['en', 'EN'], ['zh', '中文']] as const).map(([v, l]) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setLanguage(v)}
+                        className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${language === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {slideType === 'horizontal' && (
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Speaker notes</span>
+                    <div className="flex gap-1.5">
+                      {([['off', 'Off'], ['on', 'On']] as const).map(([v, l]) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setIncludeNotes(v === 'on')}
+                          className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${(v === 'on') === includeNotes ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                        >
+                          {l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                 <div className="flex items-center gap-3">
@@ -395,7 +500,7 @@ Keep your questions brief and conversational. Format them as a numbered list. Do
 
 function generateDeckFromContent(
   text: string,
-  opts: { theme?: SlideTheme; slideType?: SlideType } = {}
+  opts: { theme?: SlideTheme; slideType?: SlideType; slideCount?: number } = {}
 ): Deck {
   const theme: SlideTheme = opts.theme || 'dark'
   const slideType: SlideType = opts.slideType || 'horizontal'
@@ -422,20 +527,30 @@ function generateDeckFromContent(
   // Parse content into sections
   const sections = splitIntoSections(lines.slice(1))
 
-  for (const section of sections) {
+  // Honor the requested slide count even if the model over-generates:
+  // N = title + (N-2) content slides + closing slide. For N <= 2 the closing
+  // slide is dropped so tiny decks stay useful (N=1 → cover only, N=2 → cover + 1).
+  const contentCount = opts.slideCount !== undefined
+    ? Math.max(opts.slideCount <= 2 ? opts.slideCount - 1 : opts.slideCount - 2, 0)
+    : undefined
+  const capped = contentCount !== undefined ? sections.slice(0, contentCount) : sections
+
+  for (const section of capped) {
     const slide = sectionToSlide(section, theme)
     slides.push(slide)
   }
 
   // Closing slide
-  slides.push({
-    id: uuid(),
-    theme,
-    layout: 'statement',
-    components: [
-      { id: uuid(), type: 'heading', props: { level: 1, text: 'Thank You', html: '' } },
-    ],
-  })
+  if (opts.slideCount === undefined || opts.slideCount >= 3) {
+    slides.push({
+      id: uuid(),
+      theme,
+      layout: 'statement',
+      components: [
+        { id: uuid(), type: 'heading', props: { level: 1, text: 'Thank You', html: '' } },
+      ],
+    })
+  }
 
   return {
     id: uuid(),
@@ -449,6 +564,7 @@ function generateDeckFromContent(
 interface Section {
   heading: string
   items: string[]
+  notes: string[]
 }
 
 function splitIntoSections(lines: string[]): Section[] {
@@ -460,18 +576,23 @@ function splitIntoSections(lines: string[]): Section[] {
     if (!trimmed || trimmed.startsWith('---')) continue
 
     const headingMatch = trimmed.match(/^#{1,3}\s+(.+)/) || trimmed.match(/^[A-Z][^.!?]{3,60}$/)
-    if (headingMatch) {
-      if (current && (current.heading || current.items.length)) {
+    const noteMatch = trimmed.match(/^>\s*(.+)/)
+    if (noteMatch) {
+      // "> " blockquote = speaker notes for the current section
+      if (!current) current = { heading: '', items: [], notes: [] }
+      current.notes.push(noteMatch[1].trim())
+    } else if (headingMatch) {
+      if (current && (current.heading || current.items.length || current.notes.length)) {
         sections.push(current)
       }
-      current = { heading: headingMatch[1] || trimmed, items: [] }
+      current = { heading: headingMatch[1] || trimmed, items: [], notes: [] }
     } else {
-      if (!current) current = { heading: '', items: [] }
+      if (!current) current = { heading: '', items: [], notes: [] }
       const bullet = trimmed.replace(/^[\-*•]\s*/, '').replace(/^\d+[.)]\s*/, '')
       if (bullet) current.items.push(bullet)
     }
   }
-  if (current && (current.heading || current.items.length)) {
+  if (current && (current.heading || current.items.length || current.notes.length)) {
     sections.push(current)
   }
 
@@ -484,8 +605,9 @@ function splitIntoSections(lines: string[]): Section[] {
       acc = null
       batched.push(s)
     } else {
-      if (!acc) acc = { heading: '', items: [] }
+      if (!acc) acc = { heading: '', items: [], notes: [] }
       acc.items.push(...s.items)
+      acc.notes.push(...s.notes)
       if (acc.items.length >= 5) {
         batched.push(acc)
         acc = null
@@ -494,7 +616,7 @@ function splitIntoSections(lines: string[]): Section[] {
   }
   if (acc && acc.items.length) batched.push(acc)
 
-  return batched.length ? batched : [{ heading: 'Content', items: lines.map((l) => l.trim()).filter(Boolean) }]
+  return batched.length ? batched : [{ heading: 'Content', items: lines.map((l) => l.trim()).filter(Boolean), notes: [] }]
 }
 
 function sectionToSlide(section: Section, theme: SlideTheme = 'dark'): Slide {
@@ -523,6 +645,7 @@ function sectionToSlide(section: Section, theme: SlideTheme = 'dark'): Slide {
     theme,
     layout,
     components,
+    notes: section.notes.length > 0 ? section.notes.join(' ') : undefined,
   }
 }
 
@@ -530,9 +653,15 @@ function sectionToSlide(section: Section, theme: SlideTheme = 'dark'): Slide {
 // Slide-type-aware generation system prompt
 // ---------------------------------------------------------------------------
 
-function buildGenerationSystem(slideType: SlideType): string {
+function buildGenerationSystem(
+  slideType: SlideType,
+  opts: { slideCount: number; audience: Audience; language: OutputLanguage; includeNotes: boolean }
+): string {
   const base =
     'You are an expert content writer. Based on the conversation, generate complete content in markdown format.'
+
+  const audienceLine = AUDIENCE_PROMPTS[opts.audience]
+  const languageLine = LANGUAGE_PROMPTS[opts.language]
 
   if (slideType === 'vertical') {
     return `${base}
@@ -546,6 +675,8 @@ Rules:
 - Write in a clear, briefing tone — readable top-to-bottom as a document
 - Build a narrative arc: context → key points → implications → next steps
 - Keep language concise and impactful
+- ${audienceLine}
+- ${languageLine}
 
 Output ONLY the markdown — no explanations, no code fences.`
   }
@@ -561,10 +692,14 @@ Rules:
 - Use - for bullet points (2-4 short, punchy bullets per section — column-friendly)
 - Keep everything tight; it must fit on one page
 - Include a mix of updates, highlights, and a call-to-action / next-steps section
+- ${audienceLine}
+- ${languageLine}
 
 Output ONLY the markdown — no explanations, no code fences.`
   }
 
+  const n = opts.slideCount
+  const contentCount = n <= 2 ? n - 1 : n - 2
   return `${base} This is a slide deck.
 
 Rules:
@@ -572,11 +707,12 @@ Rules:
 - Use ## for subtitle on the title slide
 - Use ### for each slide heading
 - Use - for bullet points (max 5-6 per slide)
-- Keep bullet points concise and impactful
-- Aim for 6-10 slides total unless specified otherwise
+- Keep bullet points concise and impactful${opts.includeNotes ? `
+- SPEAKER NOTES: after each slide's bullet points, add exactly one line starting with "> " containing 2-3 sentences of speaker notes for that slide — verbal context, transitions, and what to emphasize; do not repeat the bullets` : ''}
+- LENGTH IS FIXED: the deck must be exactly ${n} slide${n === 1 ? '' : 's'} in total. Generate exactly ${contentCount} "###" content section${contentCount === 1 ? '' : 's'} after the title${n >= 3 ? ' — the app adds the closing slide automatically, so do NOT write a thank-you or closing section yourself' : ''}${n >= 4 ? '. Make your final content section "Next Steps" or a call to action' : ''}
 - Include a clear narrative arc: opening hook, context, main content, and strong close
-- Tailor language and depth to the stated audience
-- End with a "Next Steps" or "Call to Action" slide
+- ${audienceLine}
+- ${languageLine}
 
 Output ONLY the markdown content — no explanations, no code fences.`
 }
