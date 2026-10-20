@@ -299,17 +299,23 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
   )
 }
 
+/** How long each slide stays on screen while a multi-page thumbnail cycles. */
+const THUMB_CYCLE_MS = 3000
+
 /**
- * Lazy 1280×720 iframe thumbnail, scaled down with a ResizeObserver. Builtin
- * generator decks already render their first slide through the exporter's own
- * script; hand-crafted files get their non-first .slide elements hidden after
- * load (srcdoc iframes are same-origin).
+ * Lazy 1280×720 iframe thumbnail, scaled down with a ResizeObserver. Once
+ * loaded, multi-page templates auto-cycle through their slides — generator
+ * decks via postMessage goToSlide, hand-crafted files by toggling .slide
+ * visibility on the same-origin srcdoc document (the same channel
+ * TemplatePreview uses) — with a page counter, so the card previews every
+ * page instead of staying on the first.
  */
 function TemplateThumb({ manifest }: { manifest: TemplateManifest }) {
   const [visible, setVisible] = useState(false)
   // null = not loaded, '' = failed, string = ok
   const [html, setHtml] = useState<string | null>(null)
   const [scale, setScale] = useState(0)
+  const [page, setPage] = useState(0)
   const boxRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
@@ -354,14 +360,38 @@ function TemplateThumb({ manifest }: { manifest: TemplateManifest }) {
     return () => ro.disconnect()
   }, [])
 
-  const handleLoad = () => {
-    if (manifest.kind === 'generator') return
-    const doc = iframeRef.current?.contentDocument
-    if (!doc) return
-    doc.querySelectorAll('.slide').forEach((el, i) => {
-      ;(el as HTMLElement).style.display = i === 0 ? '' : 'none'
-    })
-  }
+  const showPage = useCallback(
+    (i: number) => {
+      const iframe = iframeRef.current
+      if (!iframe) return
+      if (manifest.kind === 'generator') {
+        iframe.contentWindow?.postMessage({ goToSlide: i }, '*')
+        return
+      }
+      const doc = iframe.contentDocument
+      if (!doc) return
+      doc.querySelectorAll('.slide').forEach((el, s) => {
+        ;(el as HTMLElement).style.display = s === i ? '' : 'none'
+      })
+    },
+    [manifest.kind],
+  )
+
+  // Auto-advance the slideshow once the HTML is ready; single-pagers stay put.
+  useEffect(() => {
+    if (!html || manifest.slideCount <= 1) return
+    const id = window.setInterval(
+      () => setPage((p) => (p + 1) % manifest.slideCount),
+      THUMB_CYCLE_MS,
+    )
+    return () => window.clearInterval(id)
+  }, [html, manifest.slideCount])
+
+  // Apply the current page on every advance, and once more after the iframe
+  // finishes loading (the earliest postMessage races its script setup).
+  useEffect(() => {
+    if (html) showPage(page)
+  }, [page, html, showPage])
 
   return (
     <div ref={boxRef} className="relative w-full aspect-video overflow-hidden bg-[#151515]">
@@ -378,10 +408,15 @@ function TemplateThumb({ manifest }: { manifest: TemplateManifest }) {
           ref={iframeRef}
           srcDoc={html}
           title={manifest.name}
-          onLoad={handleLoad}
+          onLoad={() => showPage(page)}
           className="absolute top-0 left-0 border-none pointer-events-none"
           style={{ width: 1280, height: 720, transform: `scale(${scale})`, transformOrigin: '0 0' }}
         />
+      )}
+      {html && manifest.slideCount > 1 && (
+        <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md text-[10px] tabular-nums text-white/70 bg-black/60 border border-white/10 backdrop-blur-sm">
+          {page + 1} / {manifest.slideCount}
+        </span>
       )}
     </div>
   )
