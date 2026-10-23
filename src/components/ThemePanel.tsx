@@ -8,8 +8,8 @@ export function ThemePanel() {
 
   if (!deck) {
     return (
-      <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 p-4">
-        <p className="text-mb-gray text-sm">Select a deck to edit theme</p>
+      <div className="w-64 bg-surface border-r border-hairline p-4">
+        <p className="text-ink-2 text-sm">Select a deck to edit theme</p>
       </div>
     )
   }
@@ -20,9 +20,9 @@ export function ThemePanel() {
   ]
 
   return (
-    <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 flex flex-col">
-      <div className="p-3 border-b border-white/5">
-        <span className="text-sm font-medium text-mb-light-gray">Theme & Brand</span>
+    <div className="w-64 bg-surface border-r border-hairline flex flex-col">
+      <div className="p-3 border-b border-hairline">
+        <div className="kicker">Theme & Brand</div>
       </div>
       <div className="p-3 space-y-4">
         {themes.map((t) => (
@@ -30,16 +30,16 @@ export function ThemePanel() {
             key={t.brand}
             className={`rounded-lg border p-3 cursor-pointer transition-all ${
               deck.meta.brand === t.brand
-                ? 'border-mb-orange/50 bg-mb-orange/10'
-                : 'border-white/10 hover:border-white/20'
+                ? 'border-brand bg-brand-subtle'
+                : 'border-hairline hover:border-hairline-hover'
             }`}
           >
-            <div className="text-sm text-mb-light-gray mb-2">{t.label}</div>
+            <div className="text-sm text-ink mb-2">{t.label}</div>
             <div className="flex gap-2">
               {t.colors.map((color, i) => (
                 <div
                   key={i}
-                  className="w-6 h-6 rounded-full border border-white/20"
+                  className="w-6 h-6 rounded-full border border-hairline"
                   style={{ backgroundColor: color }}
                 />
               ))}
@@ -47,11 +47,11 @@ export function ThemePanel() {
           </div>
         ))}
 
-        <div className="pt-4 border-t border-white/5">
-          <h4 className="text-xs text-mb-gray uppercase tracking-wider mb-3">Color Palette</h4>
+        <div className="pt-4 border-t border-hairline">
+          <h4 className="text-xs text-ink-2 uppercase tracking-wider mb-3">Color Palette</h4>
           <div className="grid grid-cols-4 gap-2">
             {['#FF0000', '#FF7500', '#FF9102', '#FFC767', '#0a0a0a', '#262626', '#00B0F0', '#ffffff'].map((color) => (
-              <div key={color} className="w-full aspect-square rounded border border-white/10" style={{ backgroundColor: color }} />
+              <div key={color} className="w-full aspect-square rounded border border-hairline" style={{ backgroundColor: color }} />
             ))}
           </div>
         </div>

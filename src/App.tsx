@@ -80,7 +80,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen flex bg-mb-black text-white overflow-hidden">
+    <div className="h-screen flex bg-canvas text-ink overflow-hidden">
       <Sidebar onGoHome={() => setView('landing')} />
       {renderPanel()}
       <SlideEditor />
@@ -99,29 +99,29 @@ function ShortcutsOverlay({ onClose }: { onClose: () => void }) {
   ]
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose}>
-      <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-96 shadow-2xl animate-scale-in" onClick={(e) => e.stopPropagation()}>
+      <div className="card rounded-xl p-6 w-96 shadow-lg animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-8 h-8 rounded-lg bg-mb-orange/15 flex items-center justify-center">
-            <span className="text-mb-orange text-sm">⌨</span>
+          <div className="w-8 h-8 rounded-lg bg-brand-subtle flex items-center justify-center">
+            <span className="text-brand text-sm">⌨</span>
           </div>
-          <h2 className="text-sm font-medium text-white">Keyboard Shortcuts</h2>
+          <h2 className="text-sm font-medium text-ink">Keyboard Shortcuts</h2>
         </div>
         <div className="space-y-4">
           {groups.map(g => (
             <div key={g.title}>
-              <p className="text-[9px] text-mb-gray/60 uppercase tracking-wider mb-1.5">{g.title}</p>
+              <p className="text-[9px] text-ink-3 uppercase tracking-wider mb-1.5">{g.title}</p>
               <div className="space-y-1.5">
                 {g.items.map(([key, desc]) => (
                   <div key={key} className="flex items-center justify-between">
-                    <span className="text-xs text-mb-gray">{desc}</span>
-                    <kbd className="text-[10px] px-2 py-0.5 rounded bg-white/8 border border-white/10 text-white/60 font-mono">{key}</kbd>
+                    <span className="text-xs text-ink-2">{desc}</span>
+                    <kbd className="text-[10px] px-2 py-0.5 rounded bg-surface border border-hairline text-ink-2 font-mono">{key}</kbd>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <p className="text-[10px] text-mb-gray/40 mt-5 text-center">Press ? or click outside to close</p>
+        <p className="text-[10px] text-ink-3 mt-5 text-center">Press ? or click outside to close</p>
       </div>
     </div>
   )

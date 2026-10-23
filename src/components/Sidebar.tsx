@@ -16,14 +16,14 @@ export function Sidebar({ onGoHome }: SidebarProps) {
   ]
 
   return (
-    <div className="w-14 bg-mb-charcoal border-r border-white/5 flex flex-col items-center py-4 gap-2">
+    <div className="w-14 bg-surface border-r border-hairline flex flex-col items-center py-4 gap-2">
       {/* Home / Logo */}
       <button
         onClick={onGoHome}
-        className="w-10 h-10 rounded-lg flex items-center justify-center transition-all text-mb-gray hover:text-white hover:bg-white/5 group"
+        className="w-10 h-10 rounded-lg flex items-center justify-center transition-all text-ink-2 hover:text-ink hover:bg-surface-hover group"
         title="Home"
       >
-        <div className="w-6 h-6 text-mb-gray group-hover:text-white transition-colors">
+        <div className="w-6 h-6 text-ink-2 group-hover:text-ink transition-colors">
           <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="40" cy="40" r="37" stroke="currentColor" strokeWidth="1.5"/>
             <circle cx="40" cy="40" r="32" stroke="currentColor" strokeWidth="1"/>
@@ -31,7 +31,7 @@ export function Sidebar({ onGoHome }: SidebarProps) {
           </svg>
         </div>
       </button>
-      <div className="w-6 border-t border-white/10 my-1" />
+      <div className="w-6 border-t border-hairline my-1" />
 
       {/* Nav tabs */}
       {tabs.map((tab) => (
@@ -40,14 +40,17 @@ export function Sidebar({ onGoHome }: SidebarProps) {
           onClick={() => setSidebarView(tab.id)}
           className={`relative w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
             sidebarView === tab.id
-              ? 'bg-mb-orange/20 text-mb-orange shadow-sm shadow-mb-orange/10'
-              : 'text-mb-gray hover:text-white hover:bg-white/5'
+              ? 'bg-brand-subtle text-brand'
+              : 'text-ink-2 hover:text-ink hover:bg-surface-hover'
           }`}
           title={tab.label}
         >
+          {sidebarView === tab.id && (
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-brand" />
+          )}
           <tab.icon size={18} />
           {tab.badge !== undefined && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-mb-orange/80 text-white text-[8px] font-bold flex items-center justify-center px-0.5">
+            <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-brand text-[var(--contrast-on-brand)] text-[8px] font-bold flex items-center justify-center px-0.5">
               {tab.badge}
             </span>
           )}
@@ -59,7 +62,7 @@ export function Sidebar({ onGoHome }: SidebarProps) {
 
       {/* Shortcuts hint */}
       <button
-        className="w-10 h-10 rounded-lg flex items-center justify-center text-mb-gray/40 hover:text-mb-gray transition-colors"
+        className="w-10 h-10 rounded-lg flex items-center justify-center text-ink-3 hover:text-ink-2 transition-colors"
         title="Keyboard shortcuts (?)"
         onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: '?' }))}
       >

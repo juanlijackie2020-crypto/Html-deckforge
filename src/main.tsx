@@ -1,7 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
+import { applyTheme, getInitialTheme } from './lib/theme'
 import './styles/globals.css'
+
+// Belt-and-braces with the index.html FOUC guard
+applyTheme(getInitialTheme())
 
 // Browser-mode mock for Electron API
 if (!window.electronAPI) {

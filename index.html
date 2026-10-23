@@ -4,8 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DeckForge</title>
+    <script>
+      // FOUC guard: set the dark class before CSS loads (mirrors src/lib/theme.ts).
+      // Must stay inline and framework-free; failures fall back to light.
+      try {
+        var stored = localStorage.getItem('deckforge-theme');
+        var dark = stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.backgroundColor = '#000000';
+        } else {
+          document.documentElement.style.backgroundColor = '#FFFFFF';
+        }
+      } catch (e) {
+        /* localStorage/matchMedia unavailable — light theme, no crash */
+      }
+    </script>
     <style>
-      body { margin: 0; background: #0a0a0a; }
+      body { margin: 0; }
     </style>
   </head>
   <body>

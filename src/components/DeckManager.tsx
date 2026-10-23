@@ -29,12 +29,12 @@ export function DeckManager() {
   }
 
   return (
-    <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 flex flex-col">
+    <div className="w-64 bg-surface border-r border-hairline flex flex-col">
       <div className="p-3">
-        <h3 className="text-xs font-semibold text-mb-gray uppercase tracking-wider mb-3">Import</h3>
+        <div className="kicker cool mb-3">Import</div>
         <button
           onClick={handleImport}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-mb-orange/10 text-mb-orange text-sm hover:bg-mb-orange/20 transition-all"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-ai text-ai text-sm hover:bg-ai-soft transition-all"
         >
           <FolderOpen size={14} />
           Import HTML Deck

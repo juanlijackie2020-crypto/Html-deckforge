@@ -1,26 +1,44 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        mb: {
-          red: '#FF0000',
-          'orange-dark': '#FF7500',
-          orange: '#FF9102',
-          amber: '#FFA101',
-          gold: '#FFC767',
-          black: '#0a0a0a',
-          charcoal: '#262626',
-          gray: '#7D7D7D',
-          'light-gray': '#D9D9D9',
-          blue: '#0078D6',
-          cyan: '#00B0F0',
-        },
+        // MBODS semantic tokens (values live in globals.css :root / html.dark)
+        canvas: 'var(--background)',
+        surface: 'var(--surface)',
+        'surface-elev': 'var(--surface-elevated)',
+        'surface-hover': 'var(--surface-hover)',
+        ink: 'var(--on-surface)',
+        'ink-2': 'var(--on-surface-2)',
+        'ink-3': 'var(--on-surface-3)',
+        hairline: 'var(--border)',
+        'hairline-hover': 'var(--border-hover)',
+        brand: 'var(--brand)',
+        'brand-strong': 'var(--brand-strong)',
+        'brand-amber': 'var(--brand-amber)',
+        'brand-soft': 'var(--brand-soft)',
+        'brand-subtle': 'var(--brand-subtle)',
+        ai: 'var(--ai)',
+        'ai-soft': 'var(--ai-soft)',
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        destructive: 'var(--destructive)',
       },
       fontFamily: {
         title: ['MB Corpo A Title Cond', 'Georgia', 'serif'],
-        body: ['MB Corpo S Text', 'Inter', 'sans-serif'],
+        body: ['MB Corpo S Text', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+      },
+      boxShadow: {
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+      },
+      borderRadius: {
+        DEFAULT: 'var(--radius)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
       },
     },
   },

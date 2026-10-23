@@ -268,35 +268,32 @@ export function AiPanel() {
   ]
 
   return (
-    <div className="w-72 bg-mb-charcoal/50 border-r border-white/5 flex flex-col">
-      <div className="p-3 border-b border-white/5 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-mb-orange">
-          <Sparkles size={16} />
-          <span className="text-sm font-medium">AI Generate</span>
-        </div>
-        <span className="text-[9px] text-green-400/70 px-1.5 py-0.5 rounded bg-green-400/10">DeepSeek V4</span>
+    <div className="w-72 bg-surface border-r border-hairline flex flex-col">
+      <div className="p-3 border-b border-hairline flex items-center justify-between">
+        <div className="kicker">AI Generate</div>
+        <span className="text-[9px] text-success px-1.5 py-0.5 rounded-full border border-success">DeepSeek V4</span>
       </div>
 
       {/* Content input */}
       <div className="flex-1 p-3 flex flex-col gap-2 overflow-hidden">
-        <p className="text-[10px] text-mb-gray uppercase tracking-wider">
+        <p className="text-[10px] text-ink-2 uppercase tracking-wider">
           {isPolished ? 'Polished markdown — review & edit, then generate' : 'Paste your content (text, outline, or markdown)'}
         </p>
         {error && (
-          <p className="text-[10px] text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded">{error}</p>
+          <p className="text-[10px] text-warning bg-surface-elev border-l-2 border-warning px-2 py-1 rounded">{error}</p>
         )}
         <textarea
           value={content}
           onChange={(e) => { setContent(e.target.value); setIsPolished(false); setError(null) }}
           placeholder={"Type rough notes or ideas here...\n\ne.g. workday new JV analysis\nscenario 1 join in rollout 1\nscenario 2 rollout later\n\nThen click 'Polish with AI' to generate\nstructured markdown."}
-          className={`flex-1 min-h-0 border rounded-lg px-3 py-2 text-xs text-white resize-none placeholder:text-mb-gray/40 focus:border-mb-orange/40 focus:outline-none font-mono leading-relaxed ${isPolished ? 'bg-green-900/10 border-green-500/30' : 'bg-white/5 border-white/10'}`}
+          className={`flex-1 min-h-0 border rounded-lg px-3 py-2 text-xs text-ink resize-none placeholder:text-ink-3 focus:border-brand focus:outline-none font-mono leading-relaxed ${isPolished ? 'bg-surface-elev border-success' : 'bg-surface-elev border-hairline'}`}
         />
 
         {/* Step 1: Polish with AI */}
         <button
           onClick={handlePolish}
           disabled={isPolishing || !content.trim()}
-          className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border border-mb-orange/40 text-mb-orange text-xs font-medium hover:bg-mb-orange/10 transition-all disabled:opacity-40"
+          className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg border border-brand text-brand text-xs font-medium hover:bg-brand-subtle transition-all disabled:opacity-40"
         >
           <Sparkles size={12} />
           {isPolishing ? 'Polishing...' : 'Step 1: Polish with AI'}
@@ -307,7 +304,7 @@ export function AiPanel() {
           <button
             onClick={handleGenerate}
             disabled={isGenerating || !content.trim()}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-mb-orange text-white text-xs font-medium hover:bg-mb-orange-dark transition-all disabled:opacity-40"
+            className="btn-primary flex-1 gap-1.5 px-3 py-2.5 text-xs"
           >
             <Send size={12} />
             {isGenerating ? 'Generating...' : 'Step 2: New Deck'}
@@ -316,7 +313,7 @@ export function AiPanel() {
             <button
               onClick={handleAddToCurrentDeck}
               disabled={isGenerating || !content.trim()}
-              className="flex items-center justify-center gap-1 px-3 py-2.5 rounded-lg border border-white/20 text-mb-light-gray text-xs font-medium hover:bg-white/5 transition-all disabled:opacity-40"
+              className="btn-ghost gap-1 px-3 py-2.5 text-xs"
             >
               <Wand2 size={12} />
               Add
@@ -326,13 +323,13 @@ export function AiPanel() {
       </div>
 
       {/* Quick templates */}
-      <div className="p-3 border-t border-white/5 space-y-1.5">
-        <p className="text-[10px] text-mb-gray uppercase tracking-wider mb-1">Quick Templates</p>
+      <div className="p-3 border-t border-hairline space-y-1.5">
+        <p className="text-[10px] text-ink-2 uppercase tracking-wider mb-1">Quick Templates</p>
         {quickTemplates.map((t) => (
           <button
             key={t.label}
             onClick={() => setContent(t.text)}
-            className="w-full text-left px-3 py-1.5 rounded text-xs text-mb-light-gray border border-white/5 hover:border-mb-orange/30 hover:bg-mb-orange/5 transition-all"
+            className="w-full text-left px-3 py-1.5 rounded text-xs text-ink-2 border border-hairline hover:border-brand hover:bg-brand-subtle transition-all"
           >
             {t.label}
           </button>

@@ -2,10 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══ DeckForge × MBODS design system — app chrome ═══
+   Token values mirrored from mbods-deck/template.html (:root / html.dark).
+   Iron rule: theme colors flow through these variables only.
+   Exception: html.dark select option (browser can't inherit vars there). */
+
+/* ── Fonts (MB internal assets — keep inside the company) ── */
 @font-face {
   font-family: 'MB Corpo A Title Cond';
   src: url('C:/Windows/Fonts/MBCorpoATitleCondOffice-Regular.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MB Corpo S Text';
+  src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Light.ttf') format('truetype');
+  font-weight: 300;
   font-style: normal;
 }
 
@@ -23,13 +36,83 @@
   font-style: normal;
 }
 
-body {
-  font-family: 'Inter', 'MB Corpo S Text', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ── Tokens (light) ── */
+:root {
+  --background: #ffffff;
+  --surface: #f4f4f4;
+  --surface-elevated: #ffffff;
+  --surface-hover: #eaeaea;
+  --on-surface: #262626;
+  --on-surface-2: #7d7d7d;
+  --on-surface-3: #a0a0a0;
+  --brand-strong: #ff5402;
+  --brand: #ff7500;
+  --brand-amber: #ffa101;
+  --brand-soft: #ffc767;
+  --brand-subtle: #fff3e6;
+  --ai: #0078d6;
+  --ai-soft: #e6f2fb;
+  --success: #1e8e3e;
+  --warning: #b26a00;
+  --destructive: #c8102e;
+  --border: #d9d9d9;
+  --border-hover: #bfbfbf;
+  --contrast-on-brand: #ffffff;
+  --grid: rgba(0, 0, 0, 0.035);
+
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px -4px rgba(0, 0, 0, 0.12);
+
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Scrollbar styling */
+/* ── Tokens (dark) — brand ramp shifts one step, subtle tints turn translucent ── */
+html.dark {
+  --background: #000000;
+  --surface: #121212;
+  --surface-elevated: #1a1a1a;
+  --surface-hover: #262626;
+  --on-surface: #ffffff;
+  --on-surface-2: #a8a8a8;
+  --on-surface-3: #6e6e6e;
+  --brand-strong: #ff7500;
+  --brand: #ff9102;
+  --brand-amber: #ffa101;
+  --brand-soft: #ffc767;
+  --brand-subtle: rgba(255, 145, 2, 0.15);
+  --ai: #00b0f0;
+  --ai-soft: rgba(0, 176, 240, 0.15);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --destructive: #ff5c5c;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(255, 255, 255, 0.24);
+  --grid: rgba(255, 255, 255, 0.045);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 32px -4px rgba(0, 0, 0, 0.7);
+}
+
+body {
+  font-family: 'MB Corpo S Text', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  background: var(--background);
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease);
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: #3d1d00;
+}
+
+/* ── Scrollbar (per theme) ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -39,15 +122,23 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 145, 2, 0.3);
+  background: var(--border-hover);
 }
 
-/* Select styling */
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* ── Select ── */
 select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237D7D7D' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
@@ -55,12 +146,14 @@ select {
   background-position: right 8px center;
 }
 
-select option {
-  background: #262626;
-  color: white;
+/* <option> can't inherit CSS variables (browser limitation) — the single
+   hardcoded chrome color allowed outside the token layer. */
+html.dark select option {
+  background: #1a1a1a;
+  color: #ffffff;
 }
 
-/* Animation keyframes */
+/* ── Motion: legacy keyframes (kept for existing components), retimed to --ease ── */
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -77,25 +170,24 @@ select option {
 }
 
 .animate-slide-up {
-  animation: slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slide-up 0.3s var(--ease) forwards;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.2s ease forwards;
+  animation: fade-in 0.2s var(--ease) forwards;
 }
 
 .animate-scale-in {
-  animation: scale-in 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: scale-in 0.2s var(--ease) forwards;
 }
 
-/* Panel transition smoothing */
 .panel-transition {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s var(--ease);
 }
 
-/* Focus ring for accessibility */
+/* ── Focus ring ── */
 *:focus-visible {
-  outline: 2px solid rgba(255, 145, 2, 0.5);
+  outline: 2px solid color-mix(in srgb, var(--brand) 50%, transparent);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -107,17 +199,18 @@ select option {
 
 /* Smooth color transitions on all interactive elements */
 button, a, select, input {
-  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: color 0.3s var(--ease), background-color 0.3s var(--ease),
+    border-color 0.3s var(--ease), opacity 0.3s var(--ease);
 }
 
-/* Shimmer loading effect */
+/* ── Shimmer loading effect ── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
 .shimmer-loading {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,145,2,0.05) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--brand) 5%, transparent) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -130,4 +223,275 @@ button, a, select, input {
 
 .animate-soft-pulse {
   animation: soft-pulse 2s ease-in-out infinite;
+}
+
+/* ═══ MBODS component primitives ═══ */
+@layer components {
+  /* Kicker — capsule label with glowing brand dot */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--on-surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    background: var(--surface-elevated);
+    transition: color 0.3s var(--ease), background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .kicker::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 8px var(--brand);
+    flex-shrink: 0;
+  }
+
+  .kicker.cool::before {
+    background: var(--ai);
+    box-shadow: 0 0 8px var(--ai);
+  }
+
+  /* Hairline card — hover escalation added by components (border/shadow/lift) */
+  .card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease),
+      border-color 0.5s var(--ease), background-color 0.5s var(--ease);
+  }
+
+  /* Option pill */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--on-surface-2);
+    font-size: 12px;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.3s var(--ease), background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .pill:hover {
+    border-color: var(--border-hover);
+    color: var(--on-surface);
+  }
+
+  .pill.on {
+    border-color: var(--brand);
+    background: var(--brand-subtle);
+    color: var(--on-surface);
+  }
+
+  .pill.on.cool {
+    border-color: var(--ai);
+    background: var(--ai-soft);
+  }
+
+  /* Primary action — flat brand, replaces the old orange gradients */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--contrast-on-brand);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s var(--ease), opacity 0.3s var(--ease);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--brand-strong);
+  }
+
+  .btn-primary:disabled {
+    background: var(--surface);
+    color: var(--on-surface-3);
+    cursor: not-allowed;
+  }
+
+  /* Ghost control */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--on-surface-2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.3s var(--ease), background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    color: var(--on-surface);
+  }
+
+  .btn-ghost:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Headline emphasis spans */
+  .og {
+    background: linear-gradient(135deg, var(--brand-strong), var(--brand-amber));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bl {
+    color: var(--ai);
+  }
+}
+
+/* ═══ Ambient layer ═══ */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0.3;
+}
+
+html.dark .orb {
+  opacity: 0.45;
+}
+
+.orb.o1 {
+  width: 520px;
+  height: 520px;
+  top: -160px;
+  right: -120px;
+  background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
+  animation: drift1 22s ease-in-out infinite;
+}
+
+.orb.o2 {
+  width: 460px;
+  height: 460px;
+  bottom: -180px;
+  left: -140px;
+  background: radial-gradient(circle, var(--ai) 0%, transparent 70%);
+  animation: drift2 26s ease-in-out infinite;
+}
+
+.orb.o3 {
+  width: 340px;
+  height: 340px;
+  top: 38%;
+  left: 56%;
+  background: radial-gradient(circle, var(--brand-amber) 0%, transparent 70%);
+  animation: drift3 30s ease-in-out infinite;
+  opacity: 0.2;
+}
+
+html.dark .orb.o3 {
+  opacity: 0.28;
+}
+
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-70px, 90px) scale(1.15); }
+}
+
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(90px, -70px) scale(1.1); }
+}
+
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-100px, -60px); }
+}
+
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
+}
+
+/* ═══ Reveal-on-mount (animation-based; .rv-d1…d6 step 90ms) ═══ */
+.rv {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rv-in 0.9s var(--ease) forwards;
+}
+
+.rv-d1 { animation-delay: 90ms; }
+.rv-d2 { animation-delay: 180ms; }
+.rv-d3 { animation-delay: 270ms; }
+.rv-d4 { animation-delay: 360ms; }
+.rv-d5 { animation-delay: 450ms; }
+.rv-d6 { animation-delay: 540ms; }
+
+@keyframes rv-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ Theme switch cross-fade (class removed by theme.ts after 300ms) ═══ */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition:
+    background-color 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    color 0.3s var(--ease),
+    fill 0.3s var(--ease),
+    stroke 0.3s var(--ease),
+    box-shadow 0.3s var(--ease) !important;
+}
+
+/* ═══ Reduced motion — kill everything, reveal final states ═══ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .rv {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .orb {
+    animation: none !important;
+  }
 }

@@ -7,6 +7,8 @@ import {
   Trash2,
   LayoutGrid,
   FileText,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import type { TemplateManifest, TemplateSource } from '@/types/template'
 import {
@@ -18,13 +20,14 @@ import {
 } from '@/lib/templates/registry'
 import { TemplatePreview } from '@/components/TemplatePreview'
 import { showToast } from '@/components/Toast'
+import { getInitialTheme, toggleTheme } from '@/lib/theme'
 
 type SourceFilter = 'all' | TemplateSource
 
 const SOURCE_META: Record<TemplateSource, { label: string; chip: string }> = {
-  builtin: { label: '内置', chip: 'text-[#FFC767] border-[#FF9102]/40 bg-[#FF9102]/10' },
-  folder: { label: '团队文件夹', chip: 'text-sky-300 border-sky-400/30 bg-sky-400/10' },
-  upload: { label: '我的上传', chip: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10' },
+  builtin: { label: '内置', chip: 'text-brand-amber border-brand bg-brand-subtle' },
+  folder: { label: '团队文件夹', chip: 'text-ai border-ai bg-ai-soft' },
+  upload: { label: '我的上传', chip: 'text-success border-hairline bg-surface-elev' },
 }
 
 interface Props {
@@ -40,6 +43,7 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
   const [preview, setPreview] = useState<TemplateManifest | null>(null)
   const [uploadBusy, setUploadBusy] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const [appTheme, setAppTheme] = useState<'light' | 'dark'>(() => getInitialTheme())
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const reload = useCallback(async () => {
@@ -91,35 +95,36 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      {/* Ambient glow, matching the landing page chrome */}
+    <div className="min-h-screen bg-canvas text-ink">
+      {/* Ambient layer, matching the landing page chrome */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
-        <div className="absolute -top-40 right-0 w-[600px] h-[600px] rounded-full bg-[#FF9102]/[0.06] blur-3xl" />
-        <div className="absolute bottom-0 -left-40 w-[500px] h-[500px] rounded-full bg-[#00adef]/[0.04] blur-3xl" />
+        <div className="orb o1" />
+        <div className="orb o2" />
       </div>
 
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0a0a0a]/90 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-hairline bg-surface">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-4">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
-          >
+          <button onClick={onBack} className="btn-ghost gap-1.5 px-3 py-1.5 text-xs">
             <ArrowLeft size={16} />
             返回
           </button>
-          <h1 className="text-base font-semibold tracking-wide flex items-center gap-2.5">
-            <span className="text-[#FF9102]">◆</span>
-            Template Marketplace
-          </h1>
+          <h1 className="kicker">TEMPLATE MARKETPLACE ｜ {templates.length} TEMPLATES</h1>
           <div className="ml-auto relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-3" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="搜索模板、标签…"
-              className="w-48 md:w-72 bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-2 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#FF9102]/50 transition-colors"
+              className="w-48 md:w-72 bg-surface-elev border border-hairline rounded-full pl-9 pr-4 py-2 text-xs text-ink placeholder:text-ink-3 focus:outline-none focus:border-brand transition-colors"
             />
           </div>
+          <button
+            onClick={() => setAppTheme(toggleTheme())}
+            className="text-ink-2 hover:text-ink transition-colors shrink-0"
+            title="Toggle light / dark theme"
+          >
+            {appTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
         </div>
       </header>
 
@@ -142,11 +147,7 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
                 disabled={disabled}
                 onClick={() => setSource(key)}
                 title={disabled ? '需要 DeckForge dev server' : undefined}
-                className={`px-3.5 py-1.5 rounded-full text-xs border transition-all ${
-                  active
-                    ? 'border-[#FF9102] text-[#FFC767] bg-[#FF9102]/10'
-                    : 'border-white/10 text-white/50 hover:text-white hover:border-white/30'
-                } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`pill ${active ? 'on' : ''} ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
               >
                 {label}
                 <span className="ml-1.5 text-[10px] opacity-60 tabular-nums">{count}</span>
@@ -156,14 +157,14 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
         </div>
 
         {catalog !== null && !catalog.folderAvailable && (
-          <div className="mb-4 px-4 py-2.5 rounded-lg border border-yellow-400/20 bg-yellow-400/5 text-[11px] text-yellow-200/70 leading-relaxed">
+          <div className="mb-4 px-4 py-2.5 rounded-lg border border-hairline border-l-2 border-l-warning bg-surface-elev text-[11px] text-warning leading-relaxed">
             团队文件夹当前不可用（此来源仅在 DeckForge dev server 下提供）。可以继续使用内置模板，或上传本地 HTML
             文件。
           </div>
         )}
 
         {catalog === null ? (
-          <div className="py-24 flex items-center justify-center gap-2 text-white/40">
+          <div className="py-24 flex items-center justify-center gap-2 text-ink-2">
             <Loader2 size={18} className="animate-spin" />
             <span className="text-sm">正在加载模板库…</span>
           </div>
@@ -184,31 +185,31 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
               onClick={() => {
                 if (uploadsAvailable && !uploadBusy) fileInputRef.current?.click()
               }}
-              className={`group rounded-xl border border-dashed overflow-hidden transition-all ${
+              className={`group card rounded-xl border-dashed overflow-hidden ${
                 !uploadsAvailable
-                  ? 'border-white/10 opacity-40 cursor-not-allowed'
+                  ? 'border-hairline opacity-40 cursor-not-allowed'
                   : dragOver
-                    ? 'border-[#FF9102] bg-[#FF9102]/10 cursor-copy'
-                    : 'border-white/20 hover:border-[#FF9102]/60 bg-white/[0.02] cursor-pointer'
+                    ? 'border-brand bg-brand-subtle cursor-copy'
+                    : 'border-hairline-hover hover:border-brand cursor-pointer'
               }`}
             >
               <div className="w-full aspect-video flex flex-col items-center justify-center gap-2">
                 {uploadBusy ? (
-                  <Loader2 size={22} className="animate-spin text-[#FF9102]" />
+                  <Loader2 size={22} className="animate-spin text-brand" />
                 ) : (
                   <Upload
                     size={22}
-                    className={`transition-colors ${dragOver ? 'text-[#FF9102]' : 'text-white/30 group-hover:text-[#FF9102]'}`}
+                    className={`transition-colors ${dragOver ? 'text-brand' : 'text-ink-3 group-hover:text-brand'}`}
                   />
                 )}
-                <div className="text-xs text-white/70 font-medium">上传 HTML 模板</div>
-                <div className="text-[10px] text-white/35 text-center px-4 leading-relaxed">
+                <div className="text-xs text-ink-2 font-medium">上传 HTML 模板</div>
+                <div className="text-[10px] text-ink-3 text-center px-4 leading-relaxed">
                   点击或拖拽 .html 文件 · 单个 ≤ 5MB · 支持多选
                 </div>
               </div>
-              <div className="px-3 py-3 border-t border-white/5">
-                <div className="text-sm font-medium text-white/80">我的模板</div>
-                <div className="text-[11px] text-white/40 mt-0.5">
+              <div className="px-3 py-3 border-t border-hairline">
+                <div className="text-sm font-medium text-ink">我的模板</div>
+                <div className="text-[11px] text-ink-3 mt-0.5">
                   {uploadsAvailable ? '上传后保存在本机，随时可用' : '浏览器本地存储不可用'}
                 </div>
               </div>
@@ -218,7 +219,9 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
               <button
                 key={t.id}
                 onClick={() => setPreview(t)}
-                className="group text-left rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-[#FF9102]/50 hover:bg-white/[0.05] transition-all"
+                className={`group card text-left rounded-xl overflow-hidden border-t-[3px] ${
+                  t.importMode === 'structured' ? 'border-t-brand' : 'border-t-ai'
+                } hover:border-x-hairline-hover hover:border-b-hairline-hover hover:shadow-md`}
               >
                 <div className="relative">
                   <TemplateThumb manifest={t} />
@@ -230,7 +233,7 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
                   {t.source === 'upload' && (
                     <span
                       onClick={(e) => handleDelete(e, t)}
-                      className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/60 border border-white/10 flex items-center justify-center text-white/50 hover:text-red-400 hover:border-red-400/40 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-surface-elev border border-hairline shadow-sm flex items-center justify-center text-ink-2 hover:text-destructive hover:border-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                       title="删除"
                     >
                       <Trash2 size={13} />
@@ -239,25 +242,25 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
                 </div>
                 <div className="p-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white truncate">{t.name}</span>
-                    <span className="ml-auto shrink-0 text-[10px] text-white/40 tabular-nums">
+                    <span className="text-sm font-medium text-ink truncate">{t.name}</span>
+                    <span className="ml-auto shrink-0 text-[10px] text-ink-3 tabular-nums">
                       {t.slideCount} 页
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] text-white/40 line-clamp-2 leading-relaxed">
+                  <p className="mt-1 text-[11px] text-ink-3 line-clamp-2 leading-relaxed">
                     {t.description}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {t.tags.slice(0, 4).map((tag) => (
                       <span
                         key={tag}
-                        className="px-1.5 py-0.5 rounded text-[10px] text-white/45 bg-white/5 border border-white/10"
+                        className="px-1.5 py-0.5 rounded text-[10px] text-ink-2 bg-surface border border-hairline"
                       >
                         {tag}
                       </span>
                     ))}
                     {t.importMode === 'structured' && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] text-sky-300/80 bg-sky-400/10 border border-sky-400/20">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] text-brand bg-brand-subtle border border-brand">
                         组件级编辑
                       </span>
                     )}
@@ -267,8 +270,8 @@ export function MarketplacePage({ onBack, onUseTemplate }: Props) {
             ))}
 
             {filtered.length === 0 && (
-              <div className="col-span-full py-16 flex flex-col items-center gap-2 text-white/40">
-                <LayoutGrid size={24} className="text-white/20" />
+              <div className="col-span-full py-16 flex flex-col items-center gap-2 text-ink-2">
+                <LayoutGrid size={24} className="text-ink-3" />
                 <p className="text-sm">{q || source !== 'all' ? '没有匹配的模板' : '暂无模板'}</p>
               </div>
             )}
@@ -394,13 +397,13 @@ function TemplateThumb({ manifest }: { manifest: TemplateManifest }) {
   }, [page, html, showPage])
 
   return (
-    <div ref={boxRef} className="relative w-full aspect-video overflow-hidden bg-[#151515]">
+    <div ref={boxRef} className="relative w-full aspect-video overflow-hidden bg-surface-elev">
       {html === null ? (
         <div className="absolute inset-0 flex items-center justify-center">
-          <Loader2 size={16} className="animate-spin text-white/20" />
+          <Loader2 size={16} className="animate-spin text-ink-3" />
         </div>
       ) : html === '' ? (
-        <div className="absolute inset-0 flex items-center justify-center text-white/20">
+        <div className="absolute inset-0 flex items-center justify-center text-ink-3">
           <FileText size={20} />
         </div>
       ) : (
@@ -414,7 +417,7 @@ function TemplateThumb({ manifest }: { manifest: TemplateManifest }) {
         />
       )}
       {html && manifest.slideCount > 1 && (
-        <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md text-[10px] tabular-nums text-white/70 bg-black/60 border border-white/10 backdrop-blur-sm">
+        <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md text-[10px] tabular-nums text-ink-2 bg-surface-elev border border-hairline">
           {page + 1} / {manifest.slideCount}
         </span>
       )}

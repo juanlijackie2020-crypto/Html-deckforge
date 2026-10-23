@@ -50,10 +50,11 @@
 | `--background` | `#FFFFFF` | `#000000` | 页面底 |
 | `--surface` | `#F4F4F4` | `#121212` | 侧栏 / 面板底 |
 | `--surface-elevated` | `#FFFFFF` | `#1A1A1A` | 卡片 / 弹层 |
+| `--surface-hover` | `#EAEAEA` | `#262626` | ghost 按钮 / 列表行 hover 底 |
 | `--on-surface` | `#262626` | `#FFFFFF` | 主文字 |
 | `--on-surface-2` | `#7D7D7D` | `#A8A8A8` | 次文字 |
 | `--on-surface-3` | `#A0A0A0` | `#6E6E6E` | 弱文字 / placeholder |
-| `--brand-strong` / `--brand` / `--brand-amber` / `--brand-soft` / `--brand-subtle` | `#FF5402` / `#FF7500` / `#FFA101` / `#FFC767` / `#FFF3E6` | 同浅色（橙色梯度黑白通用） | MB 橙——主强调 |
+| `--brand-strong` / `--brand` / `--brand-amber` / `--brand-soft` / `--brand-subtle` | `#FF5402` / `#FF7500` / `#FFA101` / `#FFC767` / `#FFF3E6` | `#FF7500` / `#FF9102` / `#FFA101` / `#FFC767` / `rgba(255,145,2,.15)` | MB 橙——主强调；深色整体上移一档、subtle 变半透明橙（template.html 实测） |
 | `--ai` / `--ai-soft` | `#0078D6` / `#E6F2FB` | `#00B0F0` / `rgba(0,176,240,.15)` | AI 蓝——次强调 |
 | `--success` / `--warning` / `--destructive` | `#1E8E3E` / `#B26A00` / `#C8102E` | `#4ADE80` / `#FBBF24` / `#FF5C5C` | 语义色 |
 | `--border` / `--border-hover` | `#D9D9D9` / `#BFBFBF` | `rgba(255,255,255,.12)` / `rgba(255,255,255,.24)` | 发丝线 |
@@ -65,7 +66,7 @@
 ### 3.2 形状 / 阴影 / 缓动
 
 - `--radius: 8px`、`--radius-lg: 12px`、`--radius-xl: 16px`
-- `--shadow-sm: 0 1px 2px rgba(0,0,0,.06)`、`--shadow-md: 0 4px 12px rgba(0,0,0,.08)`、`--shadow-lg: 0 12px 32px rgba(0,0,0,.14)`
+- 阴影随主题加重（template.html 实测）：浅 `--shadow-sm: 0 1px 3px rgba(0,0,0,.05)`、`--shadow-md: 0 4px 16px -2px rgba(0,0,0,.08)`、`--shadow-lg: 0 8px 32px -4px rgba(0,0,0,.12)`；深 `0 1px 3px rgba(0,0,0,.5)` / `0 4px 16px -2px rgba(0,0,0,.6)` / `0 8px 32px -4px rgba(0,0,0,.7)`
 - `--ease: cubic-bezier(0.32,0.72,0,1)`——唯一缓动；时长：hover .3s、卡片 .5s、reveal .9s
 
 ### 3.3 字体
@@ -115,7 +116,7 @@ export function toggleTheme(): Theme       // 翻转 + localStorage('deckforge-t
 
 **globals.css `@layer components` 原语**（组件用原语 + Tailwind 布局类组合，避免每个组件重复手写）：
 
-- `.kicker`——flex、`::before` 3×14px 橙色竖条、10px 大写字距标签、`ink-2`；`.kicker.cool` 竖条与文字转 `--ai`。
+- `.kicker`——MBODS 原版胶囊 chip：hairline 边 + surface-elev 底 + 全圆角 + `::before` 6px 发光圆点（`--brand` + 8px glow）+ 10.5px/700/.22em 大写标签、ink-2；`.kicker.cool` 圆点转 `--ai`。
 - `.card`——`bg-surface-elev` + 1px hairline + `--radius-lg` + `--shadow-sm`；hover 由组件加 `hover:border-hairline-hover` + 阴影升至 `--shadow-md`（.5s `var(--ease)`）。
 - `.pill` / `.pill.on` / `.pill.on.cool`——选项胶囊：默认 hairline + ink-2，hover border-hover；选中 = `--brand` 边 + `--brand-subtle` 底 + ink 文字（cool 变体用 ai / ai-soft）。
 - `.btn-primary`——平面 `--brand` 底 + `--contrast-on-brand` 文字 + 胶囊圆角，hover `--brand-strong`；disabled = surface 底 + ink-3。**取代现有橙色渐变按钮**。
@@ -150,7 +151,7 @@ export function toggleTheme(): Theme       // 翻转 + localStorage('deckforge-t
 
 ### 4.4 编辑器外壳
 
-- **Sidebar rail**：`bg-surface` + 右 hairline；激活 tab = 左缘 3px `--brand` 竖条（与 kicker 同构）+ brand 图标 + brand-subtle 底；非激活 ink-2 → hover ink；badge = brand 胶囊。
+- **Sidebar rail**：`bg-surface` + 右 hairline；激活 tab = 左缘 3px `--brand` 竖条 + brand 图标 + brand-subtle 底；非激活 ink-2 → hover ink；badge = brand 胶囊。
 - **左侧面板**（SlidePanel / AiPanel / ExportPanel / BrandKitPanel / ThemePanel / DeckManager）：`bg-surface` + 右 hairline；区块标题 `.kicker`；内部输入/按钮/列表项全部 token 化（`bg-white/5` → `bg-canvas` 或 surface-elev、`text-white/xx` → ink 系、橙色元素 → brand 系、模板/导入类元素 → ai 系）。
 - **SlideEditor chrome**：顶栏 surface-elev + 底 hairline（标题、deck 名、动作按钮 token 化）；生成横幅——进行中 = `--warning` 竖条 + surface-elev 底，失败 = `--destructive` 竖条 + 动作按钮（跳过 = `.btn-primary`，重试 = `.btn-ghost`）；画布区 `bg-surface`。
 - **ComponentEditor 浮动面板**：surface-elev + hairline + `--radius-lg` + `--shadow-lg`；AI rewrite 四按钮换 `.pill`（loading 态 brand 边）；工具栏图标 ink-2 → hover brand。

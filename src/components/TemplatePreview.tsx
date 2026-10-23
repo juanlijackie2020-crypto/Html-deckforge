@@ -93,31 +93,28 @@ export function TemplatePreview({ manifest, onBack, onUse }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-sm animate-fade-in">
       {/* Top bar */}
-      <div className="flex items-center gap-4 px-5 h-14 border-b border-white/10 bg-[#0a0a0a] shrink-0">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
-        >
+      <div className="flex items-center gap-4 px-5 h-14 border-b border-hairline bg-surface-elev shrink-0">
+        <button onClick={onBack} className="btn-ghost gap-1.5 px-3 py-1.5 text-xs">
           <ChevronLeft size={16} />
           返回模板库
         </button>
         <div className="min-w-0">
-          <div className="text-sm text-white truncate">{manifest.name}</div>
-          <div className="text-[10px] text-white/40">
+          <div className="text-sm text-ink truncate">{manifest.name}</div>
+          <div className="text-[10px] text-ink-3">
             {SOURCE_LABEL[manifest.source]} · {manifest.slideCount} 页 ·{' '}
             {manifest.importMode === 'structured' ? '组件级编辑' : '原样保留设计'}
           </div>
         </div>
         <div className="ml-auto hidden md:flex items-center gap-1.5">
           {manifest.tags.map((t) => (
-            <span key={t} className="px-2 py-0.5 rounded-full border border-white/15 text-[10px] text-white/50">
+            <span key={t} className="px-2 py-0.5 rounded-full border border-hairline text-[10px] text-ink-2">
               {t}
             </span>
           ))}
         </div>
         <button
           onClick={onBack}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-ink-2 hover:text-ink hover:bg-surface-hover transition-colors"
           title="关闭 (Esc)"
         >
           <X size={16} />
@@ -150,28 +147,28 @@ export function TemplatePreview({ manifest, onBack, onUse }: Props) {
       </div>
 
       {/* Bottom bar */}
-      <div className="flex items-center justify-center gap-4 px-5 h-16 border-t border-white/10 bg-[#0a0a0a] shrink-0">
+      <div className="flex items-center justify-center gap-4 px-5 h-16 border-t border-hairline bg-surface-elev shrink-0">
         <button
           onClick={() => setIndex((i) => Math.max(i - 1, 0))}
           disabled={!multi || index === 0}
-          className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:border-[#FF9102]/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="btn-ghost w-9 h-9 p-0"
         >
           <ChevronLeft size={16} />
         </button>
-        <span className="text-xs text-white/50 min-w-[64px] text-center tabular-nums">
+        <span className="text-xs text-ink-2 min-w-[64px] text-center tabular-nums">
           {multi ? `${index + 1} / ${manifest.slideCount}` : '单页模板'}
         </span>
         <button
           onClick={() => setIndex((i) => Math.min(i + 1, manifest.slideCount - 1))}
           disabled={!multi || index >= manifest.slideCount - 1}
-          className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:border-[#FF9102]/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="btn-ghost w-9 h-9 p-0"
         >
           <ChevronRight size={16} />
         </button>
         <button
           onClick={handleUse}
           disabled={!!error || using}
-          className="ml-8 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#FF7500] to-[#FF9102] hover:from-[#FF8500] hover:to-[#FFA020] disabled:from-white/10 disabled:to-white/10 disabled:text-white/30 disabled:cursor-not-allowed text-white text-sm font-medium transition-all flex items-center gap-2 shadow-lg shadow-orange-900/20"
+          className="btn-primary ml-8 gap-2 px-6 py-2.5 text-sm"
         >
           {using ? (
             <>

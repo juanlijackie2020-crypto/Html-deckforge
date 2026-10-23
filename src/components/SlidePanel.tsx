@@ -71,30 +71,30 @@ export function SlidePanel() {
 
   if (!deck) {
     return (
-      <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 p-4 space-y-3">
+      <div className="w-64 bg-surface border-r border-hairline p-4 space-y-3">
         <button
           onClick={handleNewDeck}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-mb-orange/10 text-mb-orange text-sm hover:bg-mb-orange/20 transition-all"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-brand text-brand text-sm hover:bg-brand-subtle transition-all"
         >
           <Plus size={14} />
           New Deck
         </button>
         {decks.length > 0 && (
           <div className="space-y-1">
-            <p className="text-xs text-mb-gray uppercase tracking-wider">Your Decks</p>
+            <p className="text-xs text-ink-2 uppercase tracking-wider">Your Decks</p>
             {decks.map((d) => (
               <div
                 key={d.id}
                 onClick={() => setActiveDeck(d.id)}
-                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm text-mb-light-gray hover:bg-white/5 transition-colors"
+                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm text-ink hover:bg-surface-hover transition-colors"
               >
-                <FileText size={12} className="text-mb-gray shrink-0" />
+                <FileText size={12} className="text-ink-3 shrink-0" />
                 <span className="truncate">{d.meta.title}</span>
               </div>
             ))}
           </div>
         )}
-        {decks.length === 0 && <p className="text-mb-gray text-sm">Create a new deck to get started.</p>}
+        {decks.length === 0 && <p className="text-ink-2 text-sm">Create a new deck to get started.</p>}
       </div>
     )
   }
@@ -127,14 +127,14 @@ export function SlidePanel() {
   }
 
   return (
-    <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 flex flex-col">
+    <div className="w-64 bg-surface border-r border-hairline flex flex-col">
       {/* Deck selector */}
-      <div className="p-2 border-b border-white/5">
+      <div className="p-2 border-b border-hairline">
         <div className="flex items-center gap-1.5">
           <select
             value={activeDeckId || ''}
             onChange={(e) => setActiveDeck(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-mb-light-gray truncate"
+            className="flex-1 bg-surface-elev border border-hairline rounded px-2 py-1 text-xs text-ink truncate focus:border-brand focus:outline-none"
           >
             {decks.map((d) => (
               <option key={d.id} value={d.id}>{d.meta.title}</option>
@@ -142,14 +142,14 @@ export function SlidePanel() {
           </select>
           <button
             onClick={handleNewDeck}
-            className="w-6 h-6 rounded flex items-center justify-center text-mb-gray hover:text-mb-orange hover:bg-mb-orange/10 transition-all"
+            className="w-6 h-6 rounded flex items-center justify-center text-ink-2 hover:text-brand hover:bg-brand-subtle transition-all"
             title="New Deck"
           >
             <Plus size={14} />
           </button>
           <button
             onClick={() => { if (activeDeckId) removeDeck(activeDeckId) }}
-            className="w-6 h-6 rounded flex items-center justify-center text-mb-gray hover:text-red-400 hover:bg-red-400/10 transition-all"
+            className="w-6 h-6 rounded flex items-center justify-center text-ink-2 hover:text-destructive transition-all"
             title="Delete Deck"
           >
             <Trash2 size={12} />
@@ -157,11 +157,11 @@ export function SlidePanel() {
         </div>
       </div>
       {/* Slides header */}
-      <div className="p-3 border-b border-white/5 flex items-center justify-between relative">
-        <span className="text-sm font-medium text-mb-light-gray">Slides ({deck.slides.length})</span>
+      <div className="p-3 border-b border-hairline flex items-center justify-between relative">
+        <span className="text-sm font-medium text-ink">Slides ({deck.slides.length})</span>
         <button
           onClick={() => setShowAddPicker(!showAddPicker)}
-          className={`w-7 h-7 rounded flex items-center justify-center transition-all ${showAddPicker ? 'text-mb-orange bg-mb-orange/15' : 'text-mb-gray hover:text-mb-orange hover:bg-mb-orange/10'}`}
+          className={`w-7 h-7 rounded flex items-center justify-center transition-all ${showAddPicker ? 'text-brand bg-brand-subtle' : 'text-ink-2 hover:text-brand hover:bg-brand-subtle'}`}
           title="Add Slide"
         >
           {showAddPicker ? <X size={14} /> : <Plus size={16} />}
@@ -169,7 +169,7 @@ export function SlidePanel() {
       </div>
       {/* Slide type picker */}
       {showAddPicker && (
-        <div className="p-2 border-b border-white/5 bg-mb-charcoal/80 grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto">
+        <div className="p-2 border-b border-hairline bg-surface grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto">
           {SLIDE_TEMPLATES.map((t) => (
             <button
               key={t.layout}
@@ -177,11 +177,11 @@ export function SlidePanel() {
                 addSlide({ layout: t.layout, theme: deck.slides.length % 2 === 0 ? 'dark' : 'light', components: buildSlotComponents(t.layout) })
                 setShowAddPicker(false)
               }}
-              className="flex items-center gap-2 px-2 py-2 rounded-md border border-white/5 hover:border-mb-orange/30 hover:bg-mb-orange/5 transition-all text-left"
+              className="flex items-center gap-2 px-2 py-2 rounded-md border border-hairline hover:border-brand hover:bg-brand-subtle transition-all text-left"
             >
-              <t.icon size={12} className="text-mb-orange shrink-0" />
+              <t.icon size={12} className="text-brand shrink-0" />
               <div className="min-w-0">
-                <span className="text-[11px] text-mb-light-gray block truncate">{t.label}</span>
+                <span className="text-[11px] text-ink-2 block truncate">{t.label}</span>
               </div>
             </button>
           ))}
@@ -200,10 +200,10 @@ export function SlidePanel() {
             onClick={() => setActiveSlide(index)}
             className={`group relative rounded-lg overflow-hidden cursor-pointer transition-all border ${
               dragOverIdx === index && dragIdx !== index
-                ? 'border-mb-orange/70'
+                ? 'border-brand'
                 : index === activeSlideIndex
-                  ? 'border-mb-orange/50 shadow-md shadow-mb-orange/10'
-                  : 'border-white/8 hover:border-white/15'
+                  ? 'border-brand shadow-md'
+                  : 'border-hairline hover:border-hairline-hover'
             } ${dragIdx === index ? 'opacity-40' : ''}`}
           >
             {/* Mini slide preview */}
@@ -213,27 +213,27 @@ export function SlidePanel() {
               </div>
             </div>
             {/* Slide info bar */}
-            <div className="flex items-center justify-between px-2 py-1.5 bg-black/40">
+            <div className="flex items-center justify-between px-2 py-1.5 bg-surface-elev border-t border-hairline">
               <div className="flex items-center gap-1.5">
-                <div className="cursor-grab active:cursor-grabbing text-mb-gray/40 hover:text-mb-gray transition-colors">
+                <div className="cursor-grab active:cursor-grabbing text-ink-3 hover:text-ink-2 transition-colors">
                   <GripVertical size={10} />
                 </div>
-                <span className="text-[10px] font-mono text-mb-gray">{index + 1}</span>
-                <span className="text-[10px] text-mb-gray/60 truncate max-w-[120px]">
+                <span className="text-[10px] font-mono text-ink-2">{index + 1}</span>
+                <span className="text-[10px] text-ink-3 truncate max-w-[120px]">
                   {slide.components.find((c) => c.type === 'heading')?.props.text as string || slide.layout}
                 </span>
               </div>
               <div className="opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity">
                 <button
                   onClick={(e) => { e.stopPropagation(); addSlide({ ...slide, id: uuid(), components: slide.components.map(c => ({ ...c, id: uuid() })) }) }}
-                  className="text-mb-gray hover:text-mb-orange transition-colors"
+                  className="text-ink-2 hover:text-brand transition-colors"
                   title="Duplicate"
                 >
                   <Copy size={10} />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); removeSlide(index) }}
-                  className="text-red-400/60 hover:text-red-400 transition-colors"
+                  className="text-ink-3 hover:text-destructive transition-colors"
                   title="Delete"
                 >
                   <Trash2 size={10} />
@@ -244,7 +244,7 @@ export function SlidePanel() {
         ))}
       </div>
       {/* Quick AI slide generator */}
-      <div className="p-2 border-t border-white/5">
+      <div className="p-2 border-t border-hairline">
         <input
           type="text"
           placeholder="Type topic + Enter = AI slide"
@@ -272,7 +272,7 @@ export function SlidePanel() {
             } catch { /* ignore */ }
             finally { input.disabled = false }
           }}
-          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[10px] text-white placeholder:text-mb-gray/40 focus:border-mb-orange/30 focus:outline-none"
+          className="w-full bg-surface-elev border border-hairline rounded-lg px-3 py-2 text-[10px] text-ink placeholder:text-ink-3 focus:border-brand focus:outline-none"
         />
       </div>
     </div>

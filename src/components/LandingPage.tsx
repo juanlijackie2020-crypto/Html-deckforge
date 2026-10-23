@@ -3,8 +3,9 @@ import { useDeckStore } from '@/store/deck-store'
 import { parseFileToMarkdown } from '@/lib/file-parser'
 import type { SlideTheme } from '@/types/deck'
 import type { Audience, OutputLanguage, SlideType } from '@/lib/deck-generator'
-import { Paperclip, Sparkles, LayoutGrid } from 'lucide-react'
+import { Paperclip, Sparkles, LayoutGrid, Sun, Moon } from 'lucide-react'
 import { showToast } from '@/components/Toast'
+import { getInitialTheme, toggleTheme } from '@/lib/theme'
 
 interface Props {
   /** Switches the App view to the editor (generation continues in the background). */
@@ -24,6 +25,7 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
   const [includeNotes, setIncludeNotes] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { decks, setActiveDeck, startGeneration } = useDeckStore()
+  const [appTheme, setAppTheme] = useState<'light' | 'dark'>(() => getInitialTheme())
 
   // Template entry points now live in the Template Marketplace (see
   // MarketplacePage / registry); the content-only outlines that used to power
@@ -70,79 +72,74 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
     }
   }
 
-  const triStarSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M40 30 L42 38.5 L48 42 L40 40 L32 42 L38 38.5 Z" fill="rgba(255,255,255,0.12)"/></svg>`)}`
-
   return (
-    <div className="h-screen w-screen relative flex items-center justify-center p-8 overflow-hidden" style={{ backgroundColor: '#0a0a0a' }}>
-      {/* Repeating tri-star pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ backgroundImage: `url("${triStarSvg}")`, backgroundSize: '80px 80px' }}
-      />
-      {/* Orange glow — top right */}
-      <div className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,145,2,0.35) 0%, transparent 70%)' }} />
-      {/* Orange glow — bottom left */}
-      <div className="absolute -bottom-20 -left-20 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,145,2,0.3) 0%, transparent 70%)' }} />
-      {/* Subtle vignette */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)' }} />
+    <div className="h-screen w-screen relative flex items-center justify-center p-8 overflow-hidden bg-canvas">
+      {/* Ambient layer — drifting orbs + grid */}
+      <div className="orb o1" />
+      <div className="orb o2" />
+      <div className="orb o3" />
+      <div className="grid-lines" />
+
+      {/* Theme toggle */}
+      <button
+        onClick={() => setAppTheme(toggleTheme())}
+        className="btn-ghost absolute top-6 right-6 z-20 p-2.5"
+        title="Toggle light / dark theme"
+      >
+        {appTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+      </button>
 
       <div className="relative z-10 w-full max-w-3xl">
-        {/* Logo + title */}
-        <div className="text-center mb-8">
-          <div className="inline-block w-12 h-12 mb-3 text-white/80">
-            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="40" cy="40" r="37" stroke="currentColor" strokeWidth="1.5"/>
-              <circle cx="40" cy="40" r="32" stroke="currentColor" strokeWidth="1"/>
-              <path d="M40 8 L44.3 37.5 L67.7 56 L40 45 L12.3 56 L35.7 37.5 Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-light text-white tracking-wide">DeckForge</h1>
-          <p className="text-sm text-white/50 mt-1">Create stunning presentations in seconds</p>
+        {/* Kicker + title */}
+        <div className="text-center mb-8 rv">
+          <div className="kicker">DECKFORGE ｜ AI PRESENTATION STUDIO</div>
+          <h1 className="font-title text-4xl text-ink mt-4 leading-tight">Create stunning <span className="og">presentations</span> in seconds</h1>
+          <p className="text-sm text-ink-2 mt-2">Describe it once — DeckForge drafts, styles, and assembles the deck for you.</p>
         </div>
 
-        {/* Entry cards */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="flex items-center gap-3 px-5 py-4 rounded-xl border border-[#FF9102] bg-[#FF9102]/10 shadow-lg shadow-orange-900/10 text-left">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#FF7500] to-[#FF9102]">
-              <Sparkles size={18} className="text-white" />
+        {/* Entry duo */}
+        <div className="grid grid-cols-2 gap-4 mb-6 rv rv-d1">
+          <div className="card rounded-xl border-t-[3px] border-t-brand bg-brand-subtle px-5 py-4 flex items-center gap-3 text-left">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-brand">
+              <Sparkles size={18} className="text-[var(--contrast-on-brand)]" />
             </div>
-            <span className="text-sm font-medium text-white">
+            <span className="text-sm font-medium text-ink">
               Generate with AI
             </span>
           </div>
           <button
             onClick={onOpenMarketplace}
-            className="group flex items-center gap-3 px-5 py-4 rounded-xl border border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/10 transition-all text-left"
+            className="card rounded-xl border-t-[3px] border-t-ai px-5 py-4 flex items-center gap-3 text-left hover:border-x-hairline-hover hover:border-b-hairline-hover"
           >
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 group-hover:bg-gradient-to-br group-hover:from-[#FF7500] group-hover:to-[#FF9102] transition-all">
-              <LayoutGrid size={18} className="text-white" />
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-ai-soft text-ai">
+              <LayoutGrid size={18} />
             </div>
-            <span className="text-sm font-medium text-white/70 group-hover:text-white transition-colors">
+            <span className="text-sm font-medium text-ink">
               Start from a Template
             </span>
           </button>
         </div>
 
-        {/* Content area */}
-        <div className="relative border border-white/15 rounded-2xl bg-white/5 backdrop-blur-xl transition-colors overflow-hidden">
+        {/* Composer */}
+        <div className="card rounded-xl shadow-md overflow-hidden rv rv-d2">
           <div className="p-6">
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Describe your presentation — e.g. A project update on our AI HR transformation initiative covering progress, blockers, and next steps for Q3..."
-              className="w-full h-40 resize-none text-white text-base leading-relaxed placeholder:text-white/35 focus:outline-none bg-transparent"
+              className="w-full h-40 resize-none text-ink text-base leading-relaxed placeholder:text-ink-3 focus:outline-none bg-transparent"
             />
             {/* Generation options */}
             <div className={`grid ${slideType === 'horizontal' ? 'grid-cols-3' : 'grid-cols-2'} gap-4 mt-4`}>
               <div>
-                <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Slide type</span>
+                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Slide type</span>
                 <div className="flex gap-1.5 flex-wrap">
                   {([['horizontal', 'Horizontal'], ['vertical', 'Vertical'], ['newsletter', 'Newsletter']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
                       onClick={() => setSlideType(v)}
-                      className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${slideType === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      className={`pill ${slideType === v ? 'on' : ''}`}
                     >
                       {l}
                     </button>
@@ -150,14 +147,14 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
                 </div>
               </div>
               <div>
-                <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Theme</span>
+                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Theme</span>
                 <div className="flex gap-1.5">
                   {([['dark', 'Dark'], ['light', 'Light']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
                       onClick={() => setDeckTheme(v)}
-                      className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${deckTheme === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      className={`pill ${deckTheme === v ? 'on' : ''}`}
                     >
                       {l}
                     </button>
@@ -166,12 +163,12 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
               </div>
               {slideType === 'horizontal' && (
                 <div>
-                  <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Slides</span>
+                  <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Slides</span>
                   <select
                     value={slideCount}
                     onChange={(e) => setSlideCount(Number(e.target.value))}
                     title="Number of slides to generate"
-                    className="w-full bg-white/5 border border-white/15 rounded-full px-3 py-1.5 text-xs text-white focus:border-[#FF9102] focus:outline-none cursor-pointer"
+                    className="w-full bg-surface-elev border border-hairline rounded-full px-3 py-1.5 text-xs text-ink focus:border-brand focus:outline-none cursor-pointer"
                   >
                     {Array.from({ length: 30 }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>{n}</option>
@@ -180,14 +177,14 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
                 </div>
               )}
               <div>
-                <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Audience</span>
+                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Audience</span>
                 <div className="flex gap-1.5 flex-wrap">
                   {([['executive', 'Executive'], ['team', 'Team'], ['external', 'External'], ['training', 'Training']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
                       onClick={() => setAudience(v)}
-                      className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${audience === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      className={`pill ${audience === v ? 'on' : ''}`}
                     >
                       {l}
                     </button>
@@ -195,14 +192,14 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
                 </div>
               </div>
               <div>
-                <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Language</span>
+                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Language</span>
                 <div className="flex gap-1.5">
                   {([['auto', 'Auto'], ['en', 'EN'], ['zh', '中文']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
                       onClick={() => setLanguage(v)}
-                      className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${language === v ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                      className={`pill ${language === v ? 'on' : ''}`}
                     >
                       {l}
                     </button>
@@ -211,14 +208,14 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
               </div>
               {slideType === 'horizontal' && (
                 <div>
-                  <span className="block text-[10px] uppercase tracking-wider text-white/40 mb-2">Speaker notes</span>
+                  <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Speaker notes</span>
                   <div className="flex gap-1.5">
                     {([['off', 'Off'], ['on', 'On']] as const).map(([v, l]) => (
                       <button
                         key={v}
                         type="button"
                         onClick={() => setIncludeNotes(v === 'on')}
-                        className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${(v === 'on') === includeNotes ? 'border-[#FF9102] bg-[#FF9102]/15 text-white' : 'border-white/15 text-white/60 hover:border-white/30'}`}
+                        className={`pill ${(v === 'on') === includeNotes ? 'on' : ''}`}
                       >
                         {l}
                       </button>
@@ -227,17 +224,17 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
                 </div>
               )}
             </div>
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-hairline">
+              <div className="flex items-center gap-3 min-w-0">
                 <button
                   onClick={handleAttach}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-white/70 border border-white/20 rounded-full hover:bg-white/10 hover:border-white/30 transition-colors"
+                  className="btn-ghost gap-2 px-4 py-2 text-sm"
                 >
                   <Paperclip size={16} />
                   Attach (optional)
                 </button>
                 {attachedFiles.length > 0 && (
-                  <span className="text-xs text-white/40">
+                  <span className="text-xs text-ink-3 truncate">
                     {attachedFiles.map((f) => f.name).join(', ')}
                   </span>
                 )}
@@ -245,7 +242,7 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
               <button
                 onClick={handleGenerate}
                 disabled={!content.trim()}
-                className="px-6 py-2.5 bg-gradient-to-r from-[#FF7500] to-[#FF9102] hover:from-[#FF8500] hover:to-[#FFA020] disabled:from-white/10 disabled:to-white/10 disabled:text-white/30 disabled:cursor-not-allowed text-white text-sm font-medium rounded-full transition-all flex items-center gap-2 shadow-lg shadow-orange-900/20"
+                className="btn-primary gap-2 px-6 py-2.5 text-sm"
               >
                 <Sparkles size={16} />
                 生成并进入编辑器
@@ -256,17 +253,17 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
 
         {/* Recent decks */}
         {decks.length > 0 && (
-          <div className="mt-6">
-            <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Recent Decks</p>
+          <div className="mt-6 rv rv-d3">
+            <div className="kicker mb-3">Recent Decks</div>
             <div className="flex gap-3 overflow-x-auto pb-2">
               {decks.slice(-5).reverse().map((d) => (
                 <button
                   key={d.id}
                   onClick={() => { setActiveDeck(d.id); onGenerated() }}
-                  className="shrink-0 w-40 rounded-lg border border-white/10 bg-white/5 hover:border-[#FF9102]/40 hover:bg-[#FF9102]/5 transition-all p-3 text-left group"
+                  className="card shrink-0 w-40 p-3 text-left hover:border-brand-soft group"
                 >
-                  <span className="text-xs text-white/80 group-hover:text-white block truncate">{d.meta.title}</span>
-                  <span className="text-[10px] text-white/30 mt-1 block">{d.slides.length} slides</span>
+                  <span className="text-xs text-ink group-hover:text-brand block truncate transition-colors">{d.meta.title}</span>
+                  <span className="text-[10px] text-ink-3 mt-1 block">{d.slides.length} slides</span>
                 </button>
               ))}
             </div>

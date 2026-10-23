@@ -51,7 +51,7 @@ function AiRewriteBar({ text, onRewrite }: { text: string; onRewrite: (newText: 
           key={mode}
           onClick={() => handleRewrite(mode)}
           disabled={loading !== null}
-          className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] border transition-all ${loading === mode ? 'border-mb-orange/50 bg-mb-orange/10 text-mb-orange' : 'border-white/10 text-mb-gray hover:border-mb-orange/30 hover:text-mb-orange'} disabled:opacity-40`}
+          className={`pill gap-1 px-2 py-1 text-[10px] disabled:opacity-40 ${loading === mode ? 'border-brand text-brand' : ''}`}
         >
           <Icon size={9} />
           {loading === mode ? '...' : label}
@@ -85,14 +85,14 @@ function ListEditor({ comp, slideIndex, updateComponent }: { comp: SlideComponen
       <textarea
         value={items.join('\n')}
         onChange={(e) => updateComponent(slideIndex, comp.id, { items: e.target.value.split('\n') })}
-        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white resize-none h-20"
+        className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none resize-none h-20"
         placeholder="One item per line"
       />
       <div className="flex gap-1.5">
         <button
           onClick={handleSuggest}
           disabled={suggesting || items.length === 0}
-          className="flex items-center gap-1 px-2 py-1 rounded text-[10px] border border-white/10 text-mb-gray hover:border-mb-orange/30 hover:text-mb-orange transition-all disabled:opacity-40"
+          className="pill gap-1 px-2 py-1 text-[10px] disabled:opacity-40"
         >
           <Sparkles size={9} />
           {suggesting ? 'Thinking...' : 'Suggest next'}
@@ -159,7 +159,7 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
       {designWarnings.length > 0 && (
         <div className="space-y-1">
           {designWarnings.map((w, i) => (
-            <div key={i} className="flex items-start gap-1.5 text-[10px] text-yellow-400/80 bg-yellow-400/5 border border-yellow-400/20 rounded px-2 py-1.5">
+            <div key={i} className="flex items-start gap-1.5 text-[10px] text-warning bg-surface-elev border-l-2 border-warning rounded px-2 py-1.5">
               <span className="shrink-0 mt-0.5">!</span>
               <span>{w}</span>
             </div>
@@ -168,25 +168,25 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
       )}
       {/* Slide settings */}
       <section>
-        <h3 className="text-xs font-semibold text-mb-gray uppercase tracking-wider mb-3">Slide Settings</h3>
+        <h3 className="text-xs font-semibold text-ink-2 uppercase tracking-wider mb-3">Slide Settings</h3>
         <div className="space-y-3">
           <div>
-            <label className="text-xs text-mb-gray block mb-1">Theme</label>
+            <label className="text-xs text-ink-2 block mb-1">Theme</label>
             <select
               value={slide.theme}
               onChange={(e) => updateSlide(slideIndex, { theme: e.target.value as 'dark' | 'light' })}
-              className="w-full bg-white/5 border border-white/10 rounded px-3 py-1.5 text-sm text-white"
+              className="w-full bg-surface-elev border border-hairline rounded px-3 py-1.5 text-sm text-ink focus:border-brand focus:outline-none"
             >
               <option value="dark">Dark</option>
               <option value="light">Light</option>
             </select>
           </div>
           <div>
-            <label className="text-xs text-mb-gray block mb-1">Transition</label>
+            <label className="text-xs text-ink-2 block mb-1">Transition</label>
             <select
               value={slide.transition || 'slide'}
               onChange={(e) => updateSlide(slideIndex, { transition: e.target.value as any })}
-              className="w-full bg-white/5 border border-white/10 rounded px-3 py-1.5 text-sm text-white"
+              className="w-full bg-surface-elev border border-hairline rounded px-3 py-1.5 text-sm text-ink focus:border-brand focus:outline-none"
             >
               <option value="slide">Slide</option>
               <option value="fade">Fade</option>
@@ -195,11 +195,11 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
             </select>
           </div>
           <div>
-            <label className="text-xs text-mb-gray block mb-1">Layout</label>
+            <label className="text-xs text-ink-2 block mb-1">Layout</label>
             <select
               value={slide.layout}
               onChange={(e) => updateSlide(slideIndex, { layout: e.target.value as Slide['layout'] })}
-              className="w-full bg-white/5 border border-white/10 rounded px-3 py-1.5 text-sm text-white"
+              className="w-full bg-surface-elev border border-hairline rounded px-3 py-1.5 text-sm text-ink focus:border-brand focus:outline-none"
             >
               <option value="title">Title</option>
               <option value="title-image">Title + Image</option>
@@ -235,7 +235,7 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                 const suggested = detectLayout(heading, bullets, slideIndex)
                 if (suggested !== slide.layout) updateSlide(slideIndex, { layout: suggested })
               }}
-              className="mt-1.5 w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded border border-white/10 text-[10px] text-mb-gray hover:border-mb-orange/30 hover:text-mb-orange transition-all"
+              className="pill mt-1.5 w-full justify-center gap-1.5 px-2 py-1.5 text-[10px]"
             >
               <Wand2 size={10} />
               Suggest best layout
@@ -246,13 +246,13 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
 
       {/* Add components */}
       <section>
-        <h3 className="text-xs font-semibold text-mb-gray uppercase tracking-wider mb-3">Add Component</h3>
+        <h3 className="text-xs font-semibold text-ink-2 uppercase tracking-wider mb-3">Add Component</h3>
         <div className="flex gap-2 flex-wrap">
           {componentTemplates.map((tmpl) => (
             <button
               key={tmpl.type}
               onClick={() => handleAddComponent(tmpl.type)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-white/10 text-xs text-mb-light-gray hover:border-mb-orange/50 hover:text-mb-orange transition-all"
+              className="pill gap-1.5 px-3 py-1.5 text-xs"
             >
               <tmpl.icon size={12} />
               {tmpl.label}
@@ -281,15 +281,15 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                 ;(e.target as HTMLInputElement).value = ''
               }
             }}
-            className="w-full bg-white/5 border border-white/10 rounded px-2 py-1.5 text-[10px] text-white placeholder:text-mb-gray/50 focus:border-mb-orange/30 focus:outline-none"
+            className="w-full bg-surface-elev border border-hairline rounded px-2 py-1.5 text-[10px] text-ink placeholder:text-ink-3 focus:border-brand focus:outline-none"
           />
-          <p className="text-[9px] text-mb-gray/50 mt-0.5">Press Enter to create chart from data</p>
+          <p className="text-[9px] text-ink-3 mt-0.5">Press Enter to create chart from data</p>
         </div>
       </section>
 
       {/* Component list */}
       <section>
-        <h3 className="text-xs font-semibold text-mb-gray uppercase tracking-wider mb-3">
+        <h3 className="text-xs font-semibold text-ink-2 uppercase tracking-wider mb-3">
           Components ({slide.components.length})
         </h3>
         <div className="space-y-3">
@@ -302,25 +302,25 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
               onDragLeave={() => setDragOverIdx(null)}
               onDrop={(e) => { e.preventDefault(); if (dragIdx !== null && dragIdx !== compIdx) reorderComponent(slideIndex, dragIdx, compIdx); setDragIdx(null); setDragOverIdx(null) }}
               onDragEnd={() => { setDragIdx(null); setDragOverIdx(null) }}
-              className={`bg-white/3 border rounded-lg p-3 transition-all ${dragOverIdx === compIdx && dragIdx !== compIdx ? 'border-mb-orange/60 bg-mb-orange/5' : 'border-white/8'} ${dragIdx === compIdx ? 'opacity-40' : ''}`}
+              className={`bg-surface-elev border rounded-lg p-3 shadow-sm transition-all ${dragOverIdx === compIdx && dragIdx !== compIdx ? 'border-brand bg-brand-subtle' : 'border-hairline'} ${dragIdx === compIdx ? 'opacity-40' : ''}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="cursor-grab active:cursor-grabbing text-mb-gray/50 hover:text-mb-gray">
+                  <div className="cursor-grab active:cursor-grabbing text-ink-3 hover:text-ink-2">
                     <GripVertical size={12} />
                   </div>
-                  <span className="text-xs font-medium text-mb-orange capitalize">{comp.type}</span>
+                  <span className="text-xs font-medium text-brand capitalize">{comp.type}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="flex items-center gap-0.5 mr-2">
-                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetX: ((comp.props.offsetX as number) || 0) - 5 })} className="w-4 h-4 rounded flex items-center justify-center text-mb-gray hover:text-white hover:bg-white/10"><ArrowLeft size={8} /></button>
-                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetY: ((comp.props.offsetY as number) || 0) - 5 })} className="w-4 h-4 rounded flex items-center justify-center text-mb-gray hover:text-white hover:bg-white/10"><ArrowUp size={8} /></button>
-                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetY: ((comp.props.offsetY as number) || 0) + 5 })} className="w-4 h-4 rounded flex items-center justify-center text-mb-gray hover:text-white hover:bg-white/10"><ArrowDown size={8} /></button>
-                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetX: ((comp.props.offsetX as number) || 0) + 5 })} className="w-4 h-4 rounded flex items-center justify-center text-mb-gray hover:text-white hover:bg-white/10"><ArrowRight size={8} /></button>
+                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetX: ((comp.props.offsetX as number) || 0) - 5 })} className="w-4 h-4 rounded flex items-center justify-center text-ink-2 hover:text-ink hover:bg-surface-hover"><ArrowLeft size={8} /></button>
+                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetY: ((comp.props.offsetY as number) || 0) - 5 })} className="w-4 h-4 rounded flex items-center justify-center text-ink-2 hover:text-ink hover:bg-surface-hover"><ArrowUp size={8} /></button>
+                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetY: ((comp.props.offsetY as number) || 0) + 5 })} className="w-4 h-4 rounded flex items-center justify-center text-ink-2 hover:text-ink hover:bg-surface-hover"><ArrowDown size={8} /></button>
+                    <button onClick={() => updateComponent(slideIndex, comp.id, { offsetX: ((comp.props.offsetX as number) || 0) + 5 })} className="w-4 h-4 rounded flex items-center justify-center text-ink-2 hover:text-ink hover:bg-surface-hover"><ArrowRight size={8} /></button>
                   </div>
                   <button
                     onClick={() => removeComponent(slideIndex, comp.id)}
-                    className="text-red-400/60 hover:text-red-400 transition-colors"
+                    className="text-ink-3 hover:text-destructive transition-colors"
                   >
                     <Trash2 size={12} />
                   </button>
@@ -331,7 +331,7 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                 <select
                   value={(comp.props.animation as string) || 'none'}
                   onChange={(e) => updateComponent(slideIndex, comp.id, { animation: e.target.value === 'none' ? undefined : e.target.value })}
-                  className="flex-1 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-white"
+                  className="flex-1 bg-surface-elev border border-hairline rounded px-1.5 py-0.5 text-[10px] text-ink focus:border-brand focus:outline-none"
                 >
                   <option value="none">No animation</option>
                   <option value="fade-up">Fade up</option>
@@ -345,7 +345,7 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                   <select
                     value={String((comp.props.animationDelay as number) || 0)}
                     onChange={(e) => updateComponent(slideIndex, comp.id, { animationDelay: parseInt(e.target.value) })}
-                    className="w-16 bg-white/5 border border-white/10 rounded px-1 py-0.5 text-[10px] text-white"
+                    className="w-16 bg-surface-elev border border-hairline rounded px-1 py-0.5 text-[10px] text-ink focus:border-brand focus:outline-none"
                   >
                     <option value="0">0ms</option>
                     <option value="200">200ms</option>
@@ -361,31 +361,31 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                     type="text"
                     value={comp.props.text as string}
                     onChange={(e) => updateComponent(slideIndex, comp.id, { text: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                    className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                   />
                   <AiRewriteBar text={comp.props.text as string} onRewrite={(t) => updateComponent(slideIndex, comp.id, { text: t })} />
                   <div className="flex gap-2 items-center">
-                    <label className="text-[10px] text-mb-gray">Size:</label>
+                    <label className="text-[10px] text-ink-2">Size:</label>
                     <input
                       type="number"
                       min={8}
                       max={200}
                       value={(comp.props.fontSize as number) || (comp.props.level === 1 ? 56 : 44)}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { fontSize: parseInt(e.target.value) || 44 })}
-                      className="w-16 bg-white/5 border border-white/10 rounded px-2 py-0.5 text-xs text-white"
+                      className="w-16 bg-surface-elev border border-hairline rounded px-2 py-0.5 text-xs text-ink focus:border-brand focus:outline-none"
                     />
-                    <span className="text-[10px] text-mb-gray">px</span>
-                    <label className="text-[10px] text-mb-gray ml-2">Level:</label>
+                    <span className="text-[10px] text-ink-2">px</span>
+                    <label className="text-[10px] text-ink-2 ml-2">Level:</label>
                     <select
                       value={comp.props.level as number}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { level: parseInt(e.target.value) })}
-                      className="bg-white/5 border border-white/10 rounded px-2 py-0.5 text-xs text-white"
+                      className="bg-surface-elev border border-hairline rounded px-2 py-0.5 text-xs text-ink focus:border-brand focus:outline-none"
                     >
                       <option value={1}>H1</option>
                       <option value={2}>H2</option>
                     </select>
-                    <label className="text-[10px] text-mb-gray ml-2">Color:</label>
-                    <input type="color" value={(comp.props.color as string) || '#ffffff'} onChange={(e) => updateComponent(slideIndex, comp.id, { color: e.target.value })} className="w-5 h-5 rounded cursor-pointer border border-white/10 bg-transparent" />
+                    <label className="text-[10px] text-ink-2 ml-2">Color:</label>
+                    <input type="color" value={(comp.props.color as string) || '#ffffff'} onChange={(e) => updateComponent(slideIndex, comp.id, { color: e.target.value })} className="w-5 h-5 rounded cursor-pointer border border-hairline bg-transparent" />
                   </div>
                 </div>
               )}
@@ -394,20 +394,20 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                   <textarea
                     value={comp.props.text as string}
                     onChange={(e) => updateComponent(slideIndex, comp.id, { text: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white resize-none h-16"
+                    className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none resize-none h-16"
                   />
                   <AiRewriteBar text={comp.props.text as string} onRewrite={(t) => updateComponent(slideIndex, comp.id, { text: t })} />
                   <div className="flex gap-2 items-center">
-                    <label className="text-[10px] text-mb-gray">Size:</label>
+                    <label className="text-[10px] text-ink-2">Size:</label>
                     <input
                       type="number"
                       min={8}
                       max={200}
                       value={(comp.props.fontSize as number) || 16}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { fontSize: parseInt(e.target.value) || 16 })}
-                      className="w-16 bg-white/5 border border-white/10 rounded px-2 py-0.5 text-xs text-white"
+                      className="w-16 bg-surface-elev border border-hairline rounded px-2 py-0.5 text-xs text-ink focus:border-brand focus:outline-none"
                     />
-                    <span className="text-[10px] text-mb-gray">px</span>
+                    <span className="text-[10px] text-ink-2">px</span>
                   </div>
                 </div>
               )}
@@ -417,20 +417,20 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
               {comp.type === 'table' && (
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Headers (comma-separated)</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Headers (comma-separated)</label>
                     <input
                       type="text"
                       value={(comp.props.headers as string[]).join(', ')}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { headers: e.target.value.split(',').map(s => s.trim()) })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Rows (one row per line, columns separated by |)</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Rows (one row per line, columns separated by |)</label>
                     <textarea
                       value={(comp.props.rows as string[][]).map(r => r.join(' | ')).join('\n')}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { rows: e.target.value.split('\n').map(line => line.split('|').map(s => s.trim())) })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white resize-none h-24"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none resize-none h-24"
                       placeholder="Cell 1 | Cell 2 | Cell 3"
                     />
                   </div>
@@ -439,41 +439,41 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
               {comp.type === 'chart' && (
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Chart Type</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Chart Type</label>
                     <select
                       value={comp.props.chartType as string}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { chartType: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                     >
                       <option value="bar">Bar Chart</option>
                       <option value="pie">Pie Chart</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Title</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Title</label>
                     <input
                       type="text"
                       value={comp.props.title as string}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { title: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Labels (comma-separated)</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Labels (comma-separated)</label>
                     <input
                       type="text"
                       value={(comp.props.labels as string[]).join(', ')}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { labels: e.target.value.split(',').map(s => s.trim()) })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Values (comma-separated numbers)</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Values (comma-separated numbers)</label>
                     <input
                       type="text"
                       value={(comp.props.values as number[]).join(', ')}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { values: e.target.value.split(',').map(s => parseFloat(s.trim()) || 0) })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                     />
                   </div>
                 </div>
@@ -482,13 +482,13 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                 <div className="space-y-2">
                   {/* Quick stock images */}
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-1">Stock Images</label>
+                    <label className="text-[10px] text-ink-2 block mb-1">Stock Images</label>
                     <div className="grid grid-cols-4 gap-1">
                       {[1011, 1015, 1019, 1035, 1042, 1051, 1060, 1074].map(id => (
                         <button
                           key={id}
                           onClick={() => updateComponent(slideIndex, comp.id, { src: `https://picsum.photos/id/${id}/800/450`, alt: 'Stock image' })}
-                          className="w-full aspect-video rounded overflow-hidden border border-white/10 hover:border-mb-orange/50 transition-all"
+                          className="w-full aspect-video rounded overflow-hidden border border-hairline hover:border-brand transition-all"
                         >
                           <img src={`https://picsum.photos/id/${id}/80/45`} alt="" className="w-full h-full object-cover" loading="lazy" />
                         </button>
@@ -496,9 +496,9 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                     </div>
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Upload Image</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Upload Image</label>
                     <div
-                      className="w-full h-20 border-2 border-dashed border-white/15 rounded-lg flex items-center justify-center cursor-pointer hover:border-mb-orange/40 transition-colors"
+                      className="w-full h-20 border-2 border-dashed border-hairline-hover rounded-lg flex items-center justify-center cursor-pointer hover:border-brand transition-colors"
                       onClick={() => {
                         const input = document.createElement('input')
                         input.type = 'file'
@@ -518,27 +518,27 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
                       {comp.props.src ? (
                         <img src={comp.props.src as string} alt="" className="h-full object-contain rounded" />
                       ) : (
-                        <span className="text-[10px] text-mb-gray">Click to upload</span>
+                        <span className="text-[10px] text-ink-2">Click to upload</span>
                       )}
                     </div>
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Or paste URL</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Or paste URL</label>
                     <input
                       type="text"
                       value={(comp.props.src as string)?.startsWith('data:') ? '' : (comp.props.src as string)}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { src: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                       placeholder="https://..."
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">Caption</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">Caption</label>
                     <input
                       type="text"
                       value={(comp.props.caption as string) || ''}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { caption: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                       placeholder="Optional caption"
                     />
                   </div>
@@ -547,50 +547,50 @@ export function ComponentEditor({ slide, slideIndex }: Props) {
               {comp.type === 'raw' && (
                 <div className="space-y-2">
                   <div>
-                    <label className="text-[10px] text-mb-gray block mb-0.5">HTML</label>
+                    <label className="text-[10px] text-ink-2 block mb-0.5">HTML</label>
                     <textarea
                       value={comp.props.html as string}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { html: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-[11px] text-white resize-none h-36 font-mono leading-relaxed"
+                      className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-[11px] text-ink resize-none h-36 font-mono leading-relaxed focus:border-brand focus:outline-none"
                       spellCheck={false}
                     />
                   </div>
-                  <details className="rounded border border-white/10 bg-white/[0.02]">
-                    <summary className="px-2 py-1 text-[10px] text-mb-gray cursor-pointer select-none hover:text-white">
+                  <details className="rounded border border-hairline bg-surface">
+                    <summary className="px-2 py-1 text-[10px] text-ink-2 cursor-pointer select-none hover:text-ink">
                       CSS (click to expand)
                     </summary>
                     <textarea
                       value={comp.props.css as string}
                       onChange={(e) => updateComponent(slideIndex, comp.id, { css: e.target.value })}
-                      className="w-full bg-white/5 border-t border-white/10 rounded-b px-2 py-1 text-[11px] text-white resize-none h-36 font-mono leading-relaxed"
+                      className="w-full bg-surface-elev border-t border-hairline rounded-b px-2 py-1 text-[11px] text-ink resize-none h-36 font-mono leading-relaxed focus:outline-none"
                       spellCheck={false}
                     />
                   </details>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-[10px] text-mb-gray block mb-0.5">Theme</label>
+                      <label className="text-[10px] text-ink-2 block mb-0.5">Theme</label>
                       <select
                         value={(comp.props.theme as string) || 'dark'}
                         onChange={(e) => updateComponent(slideIndex, comp.id, { theme: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                        className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                       >
                         <option value="dark">Dark</option>
                         <option value="light">Light</option>
                       </select>
                     </div>
                     <div>
-                      <label className="text-[10px] text-mb-gray block mb-0.5">Fit</label>
+                      <label className="text-[10px] text-ink-2 block mb-0.5">Fit</label>
                       <select
                         value={(comp.props.fit as string) || 'fit'}
                         onChange={(e) => updateComponent(slideIndex, comp.id, { fit: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm text-white"
+                        className="w-full bg-surface-elev border border-hairline rounded px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none"
                       >
                         <option value="fit">Scale to slide</option>
                         <option value="scroll">Scroll (tall content)</option>
                       </select>
                     </div>
                   </div>
-                  <p className="text-[9px] text-mb-gray/50 leading-relaxed">
+                  <p className="text-[9px] text-ink-3 leading-relaxed">
                     Raw HTML slides keep the original design — edits apply live in the preview.
                   </p>
                 </div>

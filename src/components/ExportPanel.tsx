@@ -4,7 +4,7 @@ import { exportDeckToHtml } from '@/lib/html-exporter'
 import { exportDeckToPptx } from '@/lib/pptx-exporter'
 import { exportDeckToPdf } from '@/lib/pdf-exporter'
 import { showToast } from './Toast'
-import { Download, FileDown, Printer, Globe, Copy, Check, FileText } from 'lucide-react'
+import { FileDown, Printer, Globe, Copy, Check, FileText } from 'lucide-react'
 
 export function ExportPanel() {
   const { decks, activeDeckId } = useDeckStore()
@@ -66,20 +66,17 @@ export function ExportPanel() {
   ]
 
   return (
-    <div className="w-64 bg-mb-charcoal/50 border-r border-white/5 flex flex-col">
-      <div className="p-3 border-b border-white/5">
-        <div className="flex items-center gap-2 text-mb-orange">
-          <Download size={14} />
-          <span className="text-sm font-medium">Export</span>
-        </div>
+    <div className="w-64 bg-surface border-r border-hairline flex flex-col">
+      <div className="p-3 border-b border-hairline">
+        <div className="kicker">Export</div>
       </div>
 
       <div className="p-3 space-y-2">
         {!deck ? (
-          <p className="text-xs text-mb-gray/60 italic">Select a deck to export</p>
+          <p className="text-xs text-ink-3 italic">Select a deck to export</p>
         ) : (
           <>
-            <p className="text-[10px] text-mb-gray uppercase tracking-wider mb-2">
+            <p className="text-[10px] text-ink-2 uppercase tracking-wider mb-2">
               {deck.meta.title} &middot; {deck.slides.length} slides
             </p>
 
@@ -87,22 +84,22 @@ export function ExportPanel() {
               <button
                 key={exp.label}
                 onClick={exp.action}
-                className="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg border border-white/8 text-left hover:border-mb-orange/30 hover:bg-mb-orange/5 transition-all group"
+                className="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg border border-hairline text-left hover:border-hairline-hover hover:bg-surface-hover transition-all"
               >
-                <exp.icon size={16} className="text-mb-gray group-hover:text-mb-orange shrink-0 mt-0.5" />
+                <exp.icon size={16} className="text-ink-2 shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-xs text-mb-light-gray group-hover:text-white block">{exp.label}</span>
-                  <span className="text-[10px] text-mb-gray/60">{exp.description}</span>
+                  <span className="text-xs text-ink block">{exp.label}</span>
+                  <span className="text-[10px] text-ink-3">{exp.description}</span>
                 </div>
               </button>
             ))}
 
-            <div className="pt-2 border-t border-white/5 mt-3">
+            <div className="pt-2 border-t border-hairline mt-3">
               <button
                 onClick={handleCopyHtml}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/10 text-xs text-mb-gray hover:text-mb-orange hover:border-mb-orange/30 transition-all"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-hairline text-xs text-ink-2 hover:text-ink hover:border-hairline-hover transition-all"
               >
-                {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                 {copied ? 'Copied!' : 'Copy HTML to clipboard'}
               </button>
             </div>

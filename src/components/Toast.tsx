@@ -31,10 +31,15 @@ export function ToastContainer() {
   }, [addToast])
 
   const icons = { success: CheckCircle, error: AlertCircle, info: Info }
-  const colors = {
-    success: 'border-green-500/30 bg-green-500/10 text-green-400',
-    error: 'border-red-500/30 bg-red-500/10 text-red-400',
-    info: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
+  const bars = {
+    success: 'border-l-success',
+    error: 'border-l-destructive',
+    info: 'border-l-ai',
+  }
+  const iconColors = {
+    success: 'text-success',
+    error: 'text-destructive',
+    info: 'text-ai',
   }
 
   return (
@@ -44,11 +49,11 @@ export function ToastContainer() {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-lg border backdrop-blur-md shadow-lg animate-slide-up ${colors[toast.type]}`}
+            className={`pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-lg bg-surface-elev border border-hairline border-l-[3px] shadow-lg animate-slide-up ${bars[toast.type]}`}
           >
-            <Icon size={14} className="shrink-0" />
-            <span className="text-xs">{toast.text}</span>
-            <button onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))} className="ml-2 opacity-50 hover:opacity-100">
+            <Icon size={14} className={`shrink-0 ${iconColors[toast.type]}`} />
+            <span className="text-xs text-ink">{toast.text}</span>
+            <button onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))} className="ml-2 text-ink-3 hover:text-ink transition-colors">
               <X size={12} />
             </button>
           </div>
