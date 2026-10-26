@@ -7,31 +7,33 @@
    Iron rule: theme colors flow through these variables only.
    Exception: html.dark select option (browser can't inherit vars there). */
 
-/* ── Fonts (MB internal assets — keep inside the company) ── */
+/* ── Fonts (MB internal assets — keep inside the company) ──
+   Resolved via local() from the installed MB Corpo Office fonts — no
+   bundling, no server requests (url() file paths never load over http). */
 @font-face {
   font-family: 'MB Corpo A Title Cond';
-  src: url('C:/Windows/Fonts/MBCorpoATitleCondOffice-Regular.ttf') format('truetype');
+  src: local('MB Corpo A Title Cond Office'), local('MBCorpoATitleCondOffice-Regular');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'MB Corpo S Text';
-  src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Light.ttf') format('truetype');
+  src: local('MB Corpo S Text Office Light'), local('MBCorpoSTextOffice-Light');
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'MB Corpo S Text';
-  src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Regular.ttf') format('truetype');
+  src: local('MB Corpo S Text Office'), local('MBCorpoSTextOffice-Regular');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'MB Corpo S Text';
-  src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Bold.ttf') format('truetype');
+  src: local('MB Corpo S Text Office Bold'), local('MBCorpoSTextOffice-Bold');
   font-weight: bold;
   font-style: normal;
 }

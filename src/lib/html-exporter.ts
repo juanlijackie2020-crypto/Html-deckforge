@@ -253,8 +253,8 @@ window.addEventListener('resize', function() {
 
 function generateStyles(theme: ThemeConfig): string {
   return `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@font-face { font-family: 'MB Corpo A Title Cond'; src: url('C:/Windows/Fonts/MBCorpoATitleCondOffice-Regular.ttf') format('truetype'); font-weight: normal; }
-@font-face { font-family: 'MB Corpo S Text'; src: url('C:/Windows/Fonts/MBCorpoSTextOffice-Regular.ttf') format('truetype'); font-weight: normal; }
+@font-face { font-family: 'MB Corpo A Title Cond'; src: local('MB Corpo A Title Cond Office'), local('MBCorpoATitleCondOffice-Regular'); font-weight: normal; }
+@font-face { font-family: 'MB Corpo S Text'; src: local('MB Corpo S Text Office'), local('MBCorpoSTextOffice-Regular'); font-weight: normal; }
 
 :root {
     --red: #FF0000; --orange-dark: #FF7500; --orange: ${theme.colors.primary}; --amber: #FFA101;
