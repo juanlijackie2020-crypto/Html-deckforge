@@ -13,7 +13,7 @@ const OPTS: GenerationOptions = {
   theme: 'dark',
   slideType: 'horizontal',
   slideCount: 5,
-  audience: 'executive',
+  purpose: 'decision',
   language: 'auto',
   includeNotes: false,
 }

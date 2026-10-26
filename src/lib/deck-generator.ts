@@ -3,15 +3,17 @@ import { callLLM } from '@/lib/llm'
 import type { Deck, Slide, SlideComponent, SlideTheme } from '@/types/deck'
 
 export type SlideType = 'horizontal' | 'vertical' | 'newsletter'
-export type Audience = 'executive' | 'team' | 'external' | 'training'
+export type Purpose = 'decision' | 'information' | 'workshop'
 export type OutputLanguage = 'auto' | 'en' | 'zh'
 
-/** Generation instructions per audience — tone and depth in one anchor. */
-const AUDIENCE_PROMPTS: Record<Audience, string> = {
-  executive: 'Audience: senior executives. Lead with outcomes and business impact (bottom-line-up-front), keep jargon minimal, prefer crisp assertions over process detail.',
-  team: 'Audience: internal team and peers. Be direct and practical; working-level detail is welcome.',
-  external: 'Audience: external stakeholders or clients. Be polished and benefit-oriented; avoid internal jargon, codenames, and confidential references.',
-  training: 'Audience: training or workshop participants. Be educational and step-by-step; include concrete examples and takeaways.',
+/** Generation instructions per purpose — tone and structure in one anchor. */
+const PURPOSE_PROMPTS: Record<Purpose, string> = {
+  decision:
+    'Purpose: drive a decision. Present the options with trade-offs, make one clear recommendation, and close with the decision or approval being asked for.',
+  information:
+    'Purpose: inform. Report status, facts, and context clearly and objectively — easy to scan, with no persuasive framing.',
+  workshop:
+    'Purpose: support a live workshop. Write facilitation-ready content: agenda, exercises, discussion prompts, and concrete takeaways.',
 }
 
 const LANGUAGE_PROMPTS: Record<OutputLanguage, string> = {
@@ -26,7 +28,7 @@ export interface GenerationOptions {
   theme: SlideTheme
   slideType: SlideType
   slideCount: number
-  audience: Audience
+  purpose: Purpose
   language: OutputLanguage
   includeNotes: boolean
 }
@@ -67,7 +69,7 @@ export async function runDeckGeneration(opts: GenerationOptions): Promise<Deck> 
     [{ role: 'user', content: opts.prompt }],
     buildGenerationSystem(opts.slideType, {
       slideCount: opts.slideCount,
-      audience: opts.audience,
+      purpose: opts.purpose,
       language: opts.language,
       includeNotes: opts.includeNotes,
     })
@@ -237,12 +239,12 @@ function sectionToSlide(section: Section, theme: SlideTheme = 'dark'): Slide {
 
 export function buildGenerationSystem(
   slideType: SlideType,
-  opts: { slideCount: number; audience: Audience; language: OutputLanguage; includeNotes: boolean }
+  opts: { slideCount: number; purpose: Purpose; language: OutputLanguage; includeNotes: boolean }
 ): string {
   const base =
     'You are an expert content writer. Based on the conversation, generate complete content in markdown format.'
 
-  const audienceLine = AUDIENCE_PROMPTS[opts.audience]
+  const purposeLine = PURPOSE_PROMPTS[opts.purpose]
   const languageLine = LANGUAGE_PROMPTS[opts.language]
 
   if (slideType === 'vertical') {
@@ -257,7 +259,7 @@ Rules:
 - Write in a clear, briefing tone — readable top-to-bottom as a document
 - Build a narrative arc: context → key points → implications → next steps
 - Keep language concise and impactful
-- ${audienceLine}
+- ${purposeLine}
 - ${languageLine}
 
 Output ONLY the markdown — no explanations, no code fences.`
@@ -274,7 +276,7 @@ Rules:
 - Use - for bullet points (2-4 short, punchy bullets per section — column-friendly)
 - Keep everything tight; it must fit on one page
 - Include a mix of updates, highlights, and a call-to-action / next-steps section
-- ${audienceLine}
+- ${purposeLine}
 - ${languageLine}
 
 Output ONLY the markdown — no explanations, no code fences.`
@@ -293,7 +295,7 @@ Rules:
 - SPEAKER NOTES: after each slide's bullet points, add exactly one line starting with "> " containing 2-3 sentences of speaker notes for that slide — verbal context, transitions, and what to emphasize; do not repeat the bullets` : ''}
 - LENGTH IS FIXED: the deck must be exactly ${n} slide${n === 1 ? '' : 's'} in total. Generate exactly ${contentCount} "###" content section${contentCount === 1 ? '' : 's'} after the title${n >= 3 ? ' — the app adds the closing slide automatically, so do NOT write a thank-you or closing section yourself' : ''}${n >= 4 ? '. Make your final content section "Next Steps" or a call to action' : ''}
 - Include a clear narrative arc: opening hook, context, main content, and strong close
-- ${audienceLine}
+- ${purposeLine}
 - ${languageLine}
 
 Output ONLY the markdown content — no explanations, no code fences.`

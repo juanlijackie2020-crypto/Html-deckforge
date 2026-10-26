@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useDeckStore } from '@/store/deck-store'
 import { parseFileToMarkdown } from '@/lib/file-parser'
 import type { SlideTheme } from '@/types/deck'
-import type { Audience, OutputLanguage, SlideType } from '@/lib/deck-generator'
+import type { OutputLanguage, Purpose, SlideType } from '@/lib/deck-generator'
 import { Paperclip, Sparkles, LayoutGrid, Sun, Moon } from 'lucide-react'
 import { showToast } from '@/components/Toast'
 import { getInitialTheme, toggleTheme } from '@/lib/theme'
@@ -20,7 +20,7 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
   const [slideType, setSlideType] = useState<SlideType>('horizontal')
   const [deckTheme, setDeckTheme] = useState<SlideTheme>('dark')
   const [slideCount, setSlideCount] = useState(10)
-  const [audience, setAudience] = useState<Audience>('executive')
+  const [purpose, setPurpose] = useState<Purpose>('decision')
   const [language, setLanguage] = useState<OutputLanguage>('auto')
   const [includeNotes, setIncludeNotes] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -61,7 +61,7 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
       theme: deckTheme,
       slideType,
       slideCount,
-      audience,
+      purpose,
       language,
       includeNotes,
     })
@@ -134,7 +134,7 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
               <div>
                 <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Slide type</span>
                 <div className="flex gap-1.5 flex-wrap">
-                  {([['horizontal', 'Horizontal'], ['vertical', 'Vertical'], ['newsletter', 'Newsletter']] as const).map(([v, l]) => (
+                  {([['vertical', 'Scroll'], ['horizontal', 'Slide']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
@@ -177,14 +177,14 @@ export function LandingPage({ onGenerated, onOpenMarketplace }: Props) {
                 </div>
               )}
               <div>
-                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Audience</span>
+                <span className="block text-[10px] uppercase tracking-wider text-ink-2 mb-2">Purpose</span>
                 <div className="flex gap-1.5 flex-wrap">
-                  {([['executive', 'Executive'], ['team', 'Team'], ['external', 'External'], ['training', 'Training']] as const).map(([v, l]) => (
+                  {([['decision', 'Decision'], ['information', 'Information'], ['workshop', 'Workshop']] as const).map(([v, l]) => (
                     <button
                       key={v}
                       type="button"
-                      onClick={() => setAudience(v)}
-                      className={`pill ${audience === v ? 'on' : ''}`}
+                      onClick={() => setPurpose(v)}
+                      className={`pill ${purpose === v ? 'on' : ''}`}
                     >
                       {l}
                     </button>

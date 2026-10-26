@@ -11,7 +11,7 @@ const OPTS: GenerationOptions = {
   theme: 'dark',
   slideType: 'horizontal',
   slideCount: 10,
-  audience: 'executive',
+  purpose: 'decision',
   language: 'auto',
   includeNotes: false,
 }
@@ -74,14 +74,14 @@ describe('generateDeckFromContent', () => {
 })
 
 describe('buildGenerationSystem', () => {
-  const base = { audience: 'executive', language: 'auto' } as const
+  const base = { purpose: 'decision', language: 'auto' } as const
 
   it('locks the exact slide and section counts for horizontal decks', () => {
     const sys = buildGenerationSystem('horizontal', { ...base, slideCount: 10, includeNotes: true })
     expect(sys).toContain('exactly 10 slides')
     expect(sys).toContain('exactly 8 "###" content sections')
     expect(sys).toContain('SPEAKER NOTES')
-    expect(sys).toContain('senior executives')
+    expect(sys).toContain('drive a decision')
   })
 
   it('omits the speaker-notes rule when notes are off', () => {
@@ -90,10 +90,10 @@ describe('buildGenerationSystem', () => {
   })
 
   it('switches structure per slide type and language', () => {
-    const vertical = buildGenerationSystem('vertical', { slideCount: 10, audience: 'team', language: 'zh', includeNotes: false })
+    const vertical = buildGenerationSystem('vertical', { slideCount: 10, purpose: 'information', language: 'zh', includeNotes: false })
     expect(vertical).toContain('SINGLE long-form vertical page')
     expect(vertical).toContain('中文')
-    const newsletter = buildGenerationSystem('newsletter', { slideCount: 10, audience: 'team', language: 'zh', includeNotes: false })
+    const newsletter = buildGenerationSystem('newsletter', { slideCount: 10, purpose: 'workshop', language: 'zh', includeNotes: false })
     expect(newsletter).toContain('SINGLE one-page newsletter')
   })
 })
